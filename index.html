@@ -269,10 +269,13 @@ async function boot() {
   } catch(e) { console.warn('curriculum chưa nạp được:', e); }
   // deep-link support: ?model=m0001 or #m0001 → open interactive preview directly
   //                    #lesson=TC-8B → mở bài học
+  // Hỗ trợ cả #lesson=CODE / #theme=CODE lẫn dạng rút gọn #CODE (vd. #TC-8B, #T4)
+  const hashShort = (() => { const h = location.hash.replace(/^#/, ''); if (!h || /^(lesson|theme|model)=/.test(h)) return '';
+    return Math3DCurriculum.getLesson(h) ? 'lesson' : (Math3DCurriculum.getTheme(h) ? 'theme' : 'model'); })();
   const qp = new URLSearchParams(location.search);
-  const qModel = qp.get('model') || (/^#(?!lesson=|theme=)/.test(location.hash) ? location.hash.slice(1) : '');
-  const qLesson = qp.get('lesson') || (location.hash.startsWith('#lesson=') ? location.hash.slice(8) : '');
-  const qTheme = qp.get('theme') || (location.hash.startsWith('#theme=') ? location.hash.slice(7) : '');
+  const qModel = qp.get('model') || (hashShort === 'model' ? location.hash.slice(1) : '');
+  const qLesson = qp.get('lesson') || (location.hash.startsWith('#lesson=') ? location.hash.slice(8) : (hashShort === 'lesson' ? location.hash.slice(1) : ''));
+  const qTheme = qp.get('theme') || (location.hash.startsWith('#theme=') ? location.hash.slice(7) : (hashShort === 'theme' ? location.hash.slice(1) : ''));
   applyFilter();
   if (qLesson && Math3DCurriculum.getLesson(qLesson)) selectLesson(qLesson);
   else if (qTheme && Math3DCurriculum.getTheme(qTheme)) { curTheme = qTheme; buildThemeBar(); }
@@ -350,7 +353,26 @@ function closeLesson() {
   $('lessonPanel').classList.remove('on');
   applyFilter();
 }
-$('lpClose').onclick = closeLesson;
+$('lpClose').onclick = () => {
+  closeLesson();
+  if (curTheme) { curTheme = null; buildThemeBar(); }
+  history.replaceState(null, '', location.pathname + location.search);
+};
+
+/* Điều hướng trong-phiên (không reload) khi hash thay đổi: #lesson=X / #theme=X / #mXXXX */
+window.addEventListener('hashchange', () => {
+  const h = location.hash.replace(/^#/, '');
+  if (!h) return;
+  let code = '', kind = '';
+  if (h.startsWith('lesson=')) { code = h.slice(7); kind = 'lesson'; }
+  else if (h.startsWith('theme=')) { code = h.slice(6); kind = 'theme'; }
+  else if (Math3DCurriculum.getLesson(h)) { code = h; kind = 'lesson'; }
+  else if (Math3DCurriculum.getTheme(h)) { code = h; kind = 'theme'; }
+  else kind = 'model';
+  if (kind === 'lesson' && Math3DCurriculum.getLesson(code)) selectLesson(code);
+  else if (kind === 'theme' && Math3DCurriculum.getTheme(code)) { curTheme = code; buildThemeBar(); }
+  else { const m = Math3DCatalog.getModel(code); if (m) openModel(m); }
+});
 
 function selectLesson(code) {
   const ls = Math3DCurriculum.getLesson(code); if (!ls) return;
@@ -386,13 +408,19 @@ function makeCard(m, inLesson) {
   return card;
 }
 
+/* Tìm kiếm không phân biệt dấu tiếng Việt (nhập "lap phuong" vẫn ra "lập phương") */
+const normVN = s => s.toLowerCase()
+  .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .replace(/đ/g, 'd').replace(/\s+/g, ' ').trim();
+
 function applyFilter() {
-  const q = $('q').value.trim().toLowerCase();
+  const raw = $('q').value.trim();
+  const q = normVN(raw);
   const lv = $('fLevel').value, ct = $('fCat').value, kd = $('fKind').value;
   filtered = Math3DCatalog.models.filter(m =>
     (!lv || m.level === lv) && (!ct || m.category === ct) && (!kd || m.kind === kd) &&
     (!favOnly || favs.has(m.id)) &&
-    (!q || m.name.toLowerCase().includes(q) || m.nameEn.toLowerCase().includes(q) || m.desc.toLowerCase().includes(q)));
+    (!q || normVN(m.name).includes(q) || normVN(m.nameEn || '').includes(q) || normVN(m.desc).includes(q) || m.id.includes(q)));
   page = 0;
   renderPage();
 }
@@ -605,8 +633,10 @@ function regenerateQuiz() {
       const qi = +el.dataset.q, oi = +btn.dataset.o, q = quizData[qi];
       if (el.dataset.done) return;
       el.dataset.done = 1;
-      if (oi === q.answer) { btn.classList.add('correct'); quizScore.ok++; }
-      else { btn.classList.add('wrong'); el.querySelectorAll('.opt')[q.answer].classList.add('correct'); quizScore.bad++; }
+      const opts = [...el.querySelectorAll('.opt')];
+      const ai = Math.max(0, opts.findIndex(o => o.textContent.trim() === String(q.answer).trim()));
+      if (oi === ai) { btn.classList.add('correct'); quizScore.ok++; }
+      else { btn.classList.add('wrong'); opts[ai].classList.add('correct'); quizScore.bad++; }
       el.querySelector('.explain').style.display = 'block';
       $('quizScore').textContent = `Đúng ${quizScore.ok} · Sai ${quizScore.bad}`;
     });
