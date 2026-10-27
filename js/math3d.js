@@ -29,9 +29,18 @@
   }
   const TAU = Math.PI * 2;
 
-  /* ---------- palette ---------- */
-  const PAL = ['#e0564f', '#4f8ee0', '#4fbf7f', '#e0a64f', '#9b5de5', '#00bbf9', '#f15bb5', '#7cc4ff', '#ffd166', '#06d6a0'];
+  /* ---------- palette: refined museum-grade set (harmonious hue wheel, muted saturation) ---------- */
+  const PAL = ['#c65f56', '#4a7fc1', '#3f9e7a', '#d9a05b', '#8a6ac1', '#2fa8c9', '#c56a9e', '#6fa8dc', '#d9c05b', '#4cb89a',
+               '#a85751', '#5b8cd9', '#57a878', '#c98d4f', '#7d5fb0', '#4aa3b8', '#b0578a', '#82b4e0', '#c9b458', '#3aa88f'];
   function col(i) { return PAL[((i % PAL.length) + PAL.length) % PAL.length]; }
+  /* smooth pastel gradient between two elegant hues (for curved surfaces) */
+  function mixHex(a, b, t) {
+    const pa = parseInt(a.slice(1), 16), pb = parseInt(b.slice(1), 16);
+    const r = Math.round((((pa >> 16) & 255) * (1 - t) + ((pb >> 16) & 255) * t));
+    const g = Math.round((((pa >> 8) & 255) * (1 - t) + ((pb >> 8) & 255) * t));
+    const bl = Math.round(((pa & 255) * (1 - t) + (pb & 255) * t));
+    return `rgb(${r},${g},${bl})`;
+  }
   function shade(hex, f) {
     const n = parseInt(hex.slice(1), 16);
     let r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
@@ -52,7 +61,14 @@
   function addTri(g, a, b, c) { g.tris.push([a, b, c]); }
   function addQuad(g, a, b, c, d) { addTri(g, a, b, c); addTri(g, a, c, d); }
   function addEdge(g, a, b) { g.edges.push([a, b]); }
-  function addLine(g, p1, p2) { g.rawLines.push([p1, p2]); }
+  function addLine(g, p1, p2) {
+    // tolerant: accepts addLine(g,[a,b]) or addLine(g,a,b)
+    if (p2 === undefined && Array.isArray(p1) && p1.length === 2 && Array.isArray(p1[0]) && Array.isArray(p1[1])) {
+      g.rawLines.push([p1[0], p1[1]]);
+    } else {
+      g.rawLines.push([p1, p2]);
+    }
+  }
   function addPoint(g, p) { g.pts.push(p); }
 
   /* --- platonic solids --- */
@@ -1046,15 +1062,25 @@
   out vec3 vN; out vec3 vC; out vec3 vP;
   void main(){ vN=normalize(uNM*aNrm); vC=aCol; vec4 p=uMV*vec4(aPos,1.0); vP=p.xyz; gl_Position=uMVP*vec4(aPos,1.0); }`;
   const FS = `#version 300 es
-  precision mediump float;
+  precision highp float;
   in vec3 vN; in vec3 vC; in vec3 vP; out vec4 o;
   uniform float uAlpha;
+  // elegant studio look: warm key + cool sky fill + rim light + soft specular + ACES tonemap
+  vec3 aces(vec3 x){ return clamp((x*(2.51*x+0.03))/(x*(2.43*x+0.59)+0.14), 0.0, 1.0); }
   void main(){
-    vec3 L=normalize(vec3(0.5,0.8,0.9)); vec3 L2=normalize(vec3(-0.6,-0.2,-0.4));
-    float d=max(dot(vN,L),0.0)*0.85+max(dot(vN,L2),0.0)*0.2+0.28;
-    vec3 V=normalize(-vP); vec3 H=normalize(L+V);
-    float sp=pow(max(dot(vN,H),0.0),24.0)*0.35;
-    o=vec4(vC*d+sp, uAlpha);
+    vec3 N=normalize(vN); vec3 V=normalize(-vP);
+    vec3 Lk=normalize(vec3(0.55,0.9,0.75));   // warm key
+    vec3 Lf=normalize(vec3(-0.7,0.15,-0.35)); // cool fill (from behind-left)
+    vec3 Lb=normalize(vec3(0.1,-0.65,-0.75)); // low back bounce
+    float ndk=max(dot(N,Lk),0.0);
+    float diff=ndk*0.95 + max(dot(N,Lf),0.0)*0.30 + max(dot(N,Lb),0.0)*0.12 + 0.30;
+    vec3 H=normalize(Lk+V);
+    float sp=pow(ndk*max(dot(N,H),0.0),54.0)*0.55;
+    float fres=pow(1.0-max(dot(N,V),0.0),3.0);
+    vec3 col=vC*diff + vec3(1.0,0.96,0.90)*sp + vec3(0.45,0.62,0.95)*fres*0.30;
+    col=aces(col*1.12);
+    col=pow(col, vec3(0.92)); // gentle lift
+    o=vec4(col, uAlpha);
   }`;
   const LS = `#version 300 es
   layout(location=0) in vec3 aPos; uniform mat4 uMVP; void main(){gl_Position=uMVP*vec4(aPos,1.0);}`;
@@ -1102,22 +1128,44 @@
         const v = g.verts[i];
         data[i*9]=v[0]; data[i*9+1]=v[1]; data[i*9+2]=v[2];
         data[i*9+3]=normals[i*3]; data[i*9+4]=normals[i*3+1]; data[i*9+5]=normals[i*3+2];
-        data[i*9+6]=0.78; data[i*9+7]=0.8; data[i*9+8]=0.85;
+        data[i*9+6]=0.80; data[i*9+7]=0.83; data[i*9+8]=0.90;
       }
       const idx = new Uint32Array(g.tris.length * 3);
       g.tris.forEach((t, f) => { idx[f*3]=t[0]; idx[f*3+1]=t[1]; idx[f*3+2]=t[2]; });
       out.tri = data; out.index = idx;
     } else {
-      const triCount = g.tris.length;
-      const dup = new Float32Array(triCount * 3 * 9);
-      for (let f = 0; f < triCount; f++) {
+      // smooth-shading trick with per-face colors: average the two face colors at each edge
+      // so curved surfaces get a gentle gradient instead of hard facets.
+      const ntri = g.tris.length;
+      const faceCol = new Array(ntri);
+      for (let f = 0; f < ntri; f++) faceCol[f] = parseColor(g.faceColors[f]);
+      // accumulate color sums per (vertex, face-neighborhood) via vertex->faces map
+      const vfaces = new Map();
+      for (let f = 0; f < ntri; f++) {
+        for (const vi of g.tris[f]) {
+          let arr = vfaces.get(vi); if (!arr) { arr = []; vfaces.set(vi, arr); }
+          if (arr.length < 8) arr.push(f);
+        }
+      }
+      const smoothC = new Float32Array(vn * 3);
+      for (const [vi, fs] of vfaces) {
+        let r = 0, gg = 0, bb = 0;
+        for (const f of fs) { r += faceCol[f][0]; gg += faceCol[f][1]; bb += faceCol[f][2]; }
+        const n = fs.length;
+        smoothC[vi*3] = r/n; smoothC[vi*3+1] = gg/n; smoothC[vi*3+2] = bb/n;
+      }
+      const dup = new Float32Array(ntri * 3 * 9);
+      for (let f = 0; f < ntri; f++) {
         const t = g.tris[f];
-        const cc = parseColor(g.faceColors[f]);
+        const cc = faceCol[f];
         for (let k = 0; k < 3; k++) {
           const i = t[k], o = (f*3+k)*9;
           dup[o]=g.verts[i][0]; dup[o+1]=g.verts[i][1]; dup[o+2]=g.verts[i][2];
           dup[o+3]=normals[i*3]; dup[o+4]=normals[i*3+1]; dup[o+5]=normals[i*3+2];
-          dup[o+6]=cc[0]; dup[o+7]=cc[1]; dup[o+8]=cc[2];
+          // blend flat face color with neighborhood-smoothed color -> elegant gradient, still crisp edges
+          dup[o+6]=cc[0]*0.55 + smoothC[i*3]*0.45;
+          dup[o+7]=cc[1]*0.55 + smoothC[i*3+1]*0.45;
+          dup[o+8]=cc[2]*0.55 + smoothC[i*3+2]*0.45;
         }
       }
       out.tri = dup; out.index = null;
@@ -1167,6 +1215,8 @@
       this.rotY = 0.6; this.rotX = -0.35; this.dist = 6;
       this.model = null; this.geo = null; this.glObj = null;
       this.dragging = false; this.last = null;
+      this.fitDist = 1;
+      this._bgGrad = null; // cached gradient key
       this._buildDom();
       this._initGL();
       this._bind();
@@ -1260,19 +1310,73 @@
     }
     _matrices() {
       const aspect = this.canvas.width / Math.max(1, this.canvas.height);
-      const dist = this.dist * (this.fitDist || 1) * 0.9 + 2.2;
+      // elegant framing: gentle ease toward the fitted distance (smooth zoom-in on model change)
+      if (this._curDist == null) this._curDist = this.dist;
+      const target = this.dist * (this.fitDist || 1) * 0.9 + 2.2;
+      this._curDist += (target - this._curDist) * 0.08;
+      const dist = this._curDist;
       const eye = [Math.sin(this.rotY) * Math.cos(this.rotX) * dist, -Math.sin(this.rotX) * dist, Math.cos(this.rotY) * Math.cos(this.rotX) * dist];
-      const proj = mat4Persp(0.9, aspect, 0.1, 100);
+      const proj = mat4Persp(0.85, aspect, 0.1, 100);
       const view = mat4LookAt(eye, [0, 0, 0]);
       const mv = mat4Mul(view, mat4Identity());
       const mvp = mat4Mul(proj, mv);
       return { mvp, mv, nm: mat3NormalFromMat4(mv) };
     }
-    _renderGL() {
+    _drawBackgroundGL(gl, W, H) {
+      // fullscreen quad with vertical gradient + soft radial vignette (no depth write)
+      if (!this.bgProg) {
+        const bvs = `#version 300 es
+        layout(location=0) in vec2 aP; out vec2 vUv;
+        void main(){ vUv=aP*0.5+0.5; gl_Position=vec4(aP,0.999,1.0); }`;
+        const bfs = `#version 300 es
+        precision mediump float; in vec2 vUv; out vec4 o;
+        uniform vec3 uTop; uniform vec3 uBot; uniform vec3 uGlow;
+        void main(){
+          vec3 c = mix(uBot, uTop, smoothstep(0.0,1.0,vUv.y));
+          // studio glow behind subject
+          float d = distance(vUv, vec2(0.5,0.56));
+          c += uGlow * exp(-d*d*7.0) * 0.9;
+          // subtle corner darkening
+          c *= 1.0 - 0.35*pow(d*1.25, 2.6);
+          o = vec4(c,1.0);
+        }`;
+        this.bgProg = this._program(bvs, bfs);
+        this.bgVAO = gl.createVertexArray();
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+        gl.bindVertexArray(this.bgVAO);
+        gl.enableVertexAttribArray(0);
+        gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+        gl.bindVertexArray(null);
+      }
+      const gl2 = gl;
+      gl2.disable(gl2.DEPTH_TEST);
+      gl2.useProgram(this.bgProg);
+      const key = this.bg;
+      if (this._bgKey !== key) {
+        this._bgKey = key;
+        const base = parseColor(key);
+        // derive an elegant navy-graphite range from the requested bg color
+        const top = [base[0]*0.9+0.06, base[1]*0.95+0.09, base[2]*1.05+0.16];
+        const bot = [base[0]*0.45, base[1]*0.5, base[2]*0.62];
+        const glow = [base[0]*0.5+0.10, base[1]*0.6+0.14, base[2]*0.75+0.20];
+        gl2.uniform3fv(gl2.getUniformLocation(this.bgProg, 'uTop'), top);
+        gl2.uniform3fv(gl2.getUniformLocation(this.bgProg, 'uBot'), bot);
+        gl2.uniform3fv(gl2.getUniformLocation(this.bgProg, 'uGlow'), glow);
+      }
+      gl2.bindVertexArray(this.bgVAO);
+      gl2.drawArrays(gl2.TRIANGLE_STRIP, 0, 4);
+      gl2.bindVertexArray(null);
+      gl2.enable(gl2.DEPTH_TEST);
+    }
+    _renderGL(t) {
       const gl = this.gl;
-      gl.clearColor(...parseColor(this.bg), 1);
+      const W = this.canvas.width, H = this.canvas.height;
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      this._drawBackgroundGL(gl, W, H);
       gl.enable(gl.DEPTH_TEST);
+      gl.depthMask(true);
       gl.enable(gl.CULL_FACE);
       gl.cullFace(gl.BACK);
       const { mvp, mv, nm } = this._matrices();
@@ -1286,16 +1390,30 @@
       else gl.drawArrays(gl.TRIANGLES, 0, this.glObj.triCount * 3);
       gl.useProgram(this.lineProg);
       gl.uniformMatrix4fv(gl.getUniformLocation(this.lineProg, 'uMVP'), false, mvp);
-      gl.uniform4f(gl.getUniformLocation(this.lineProg, 'uColor'), 0.9, 0.95, 1, 0.55);
+      // crisp luminous wireframe over shaded surface
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      gl.depthMask(false);
+      gl.uniform4f(gl.getUniformLocation(this.lineProg, 'uColor'), 0.92, 0.96, 1.0, 0.6);
       gl.bindVertexArray(this.lineVAO);
       gl.drawArrays(gl.LINES, 0, this.glObj.lines.length / 3);
       gl.bindVertexArray(null);
+      gl.depthMask(true);
+      gl.disable(gl.BLEND);
     }
     _render2D() {
       const ctx = this.canvas.getContext('2d');
       if (!ctx) return;
       const W = this.canvas.width, H = this.canvas.height;
-      ctx.fillStyle = this.bg; ctx.fillRect(0, 0, W, H);
+      // elegant gradient background matching the GL studio look
+      const bg = parseColor(this.bg);
+      const grd = ctx.createLinearGradient(0, 0, 0, H);
+      grd.addColorStop(0, `rgb(${Math.round((bg[0]*0.9+0.06)*255)},${Math.round((bg[1]*0.95+0.09)*255)},${Math.round(Math.min(1,bg[2]*1.05+0.16)*255)})`);
+      grd.addColorStop(1, `rgb(${Math.round(bg[0]*0.45*255)},${Math.round(bg[1]*0.5*255)},${Math.round(bg[2]*0.62*255)})`);
+      ctx.fillStyle = grd; ctx.fillRect(0, 0, W, H);
+      const glow = ctx.createRadialGradient(W/2, H*0.56, 0, W/2, H*0.56, Math.max(W,H)*0.55);
+      glow.addColorStop(0, 'rgba(120,150,200,0.18)'); glow.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
       const { mvp } = this._matrices();
       const project = (p) => {
         const x = mvp[0]*p[0]+mvp[4]*p[1]+mvp[8]*p[2]+mvp[12];
@@ -1303,12 +1421,26 @@
         const w = mvp[3]*p[0]+mvp[7]*p[1]+mvp[11]*p[2]+mvp[15];
         return [x/w*W/2+W/2, -y/w*H/2+H/2, w];
       };
+      // key light direction in world space (matches GL shader) for painter's shading
+      const Lk = [0.479, 0.784, 0.654];
+      const shadeFace = (nrm, baseStr) => {
+        const c = parseColor(baseStr);
+        const nd = Math.max(nrm[0]*Lk[0]+nrm[1]*Lk[1]+nrm[2]*Lk[2], 0);
+        const f = nd*0.85 + 0.42;
+        return `rgb(${Math.min(255,Math.round(c[0]*f*255))},${Math.min(255,Math.round(c[1]*f*255))},${Math.min(255,Math.round(c[2]*f*255))})`;
+      };
       const faces = [];
       const fc = this.geo.faceColors && this.geo.faceColors.length === this.geo.tris.length;
       this.geo.tris.forEach((t, f) => {
         const a = project(this.geo.verts[t[0]]), b = project(this.geo.verts[t[1]]), c = project(this.geo.verts[t[2]]);
         if (a[2] <= 0 || b[2] <= 0 || c[2] <= 0) return;
-        faces.push({ pts: [a, b, c], depth: (a[2]+b[2]+c[2])/3, color: fc ? this.geo.faceColors[f] : col(f) });
+        const va = this.geo.verts[t[0]], vb = this.geo.verts[t[1]], vc = this.geo.verts[t[2]];
+        const ux = vb[0]-va[0], uy = vb[1]-va[1], uz = vb[2]-va[2];
+        const wx = vc[0]-va[0], wy = vc[1]-va[1], wz = vc[2]-va[2];
+        let nx = uy*wz-uz*wy, ny = uz*wx-ux*wz, nz = ux*wy-uy*wx;
+        const nl = Math.hypot(nx,ny,nz) || 1; nx/=nl; ny/=nl; nz/=nl;
+        const base = fc ? this.geo.faceColors[f] : col(f);
+        faces.push({ pts: [a, b, c], depth: (a[2]+b[2]+c[2])/3, color: shadeFace([nx,ny,nz], base) });
       });
       faces.sort((x, y) => x.depth - y.depth);
       for (const f of faces) {
@@ -1317,12 +1449,12 @@
         ctx.lineTo(f.pts[1][0], f.pts[1][1]);
         ctx.lineTo(f.pts[2][0], f.pts[2][1]);
         ctx.closePath();
-        ctx.fillStyle = f.color.startsWith('hsl') || f.color.startsWith('#') || f.color.startsWith('rgb') ? f.color : '#ccc';
-        ctx.globalAlpha = 0.92; ctx.fill();
-        ctx.globalAlpha = 0.15; ctx.strokeStyle = '#000'; ctx.stroke();
+        ctx.fillStyle = f.color;
+        ctx.globalAlpha = 0.96; ctx.fill();
+        ctx.globalAlpha = 0.10; ctx.strokeStyle = '#04070c'; ctx.lineWidth = 0.7; ctx.stroke();
         ctx.globalAlpha = 1;
       }
-      ctx.strokeStyle = 'rgba(255,255,255,.5)';
+      ctx.strokeStyle = 'rgba(210,228,255,.55)'; ctx.lineWidth = 1;
       for (const ln of this.geo.rawLines) {
         const a = project(ln[0]), b = project(ln[1]);
         if (a[2] <= 0 || b[2] <= 0) continue;
@@ -1332,7 +1464,7 @@
     dispose() { cancelAnimationFrame(this._raf); }
   }
 
-  /* ---------- static preview image (no animation) ---------- */
+  /* ---------- static preview image (no animation) — elegant studio thumbnail ---------- */
   function buildPreviewCanvas(model, px) {
     px = px || 120;
     let g;
@@ -1340,18 +1472,29 @@
     const cv = document.createElement('canvas');
     cv.width = px; cv.height = px;
     const ctx = cv.getContext('2d');
-    ctx.fillStyle = '#0d1522'; ctx.fillRect(0, 0, px, px);
+    // gradient + glow background (matches viewer)
+    const grd = ctx.createLinearGradient(0, 0, 0, px);
+    grd.addColorStop(0, '#1c2a41'); grd.addColorStop(1, '#060b14');
+    ctx.fillStyle = grd; ctx.fillRect(0, 0, px, px);
+    const glow = ctx.createRadialGradient(px/2, px*0.56, 0, px/2, px*0.56, px*0.62);
+    glow.addColorStop(0, 'rgba(110,145,200,0.20)'); glow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, px, px);
     const rotY = 0.7, rotX = -0.45, dist = 5.2;
     const cy = Math.cos(rotY), sy = Math.sin(rotY), cx = Math.cos(rotX), sx = Math.sin(rotX);
     let maxR = 0.5; g.verts.forEach(v => maxR = Math.max(maxR, Math.hypot(...v)));
-    const scale = px * 0.36 / maxR;
+    const scale = px * 0.38 / maxR;
     const project = (p) => {
-      // rotate world: Ry then Rx
       let x = p[0]*cy + p[2]*sy, z = -p[0]*sy + p[2]*cy, y = p[1];
       const y2 = y*cx - z*sx, z2 = y*sx + z*cx;
       y = y2; z = z2;
       const w = dist + z;
       return [px/2 + x*scale*(dist/w), px/2 - y*scale*(dist/w), w];
+    };
+    // world-space normals for painter lighting (key light matches GL shader)
+    const Lk = [0.479, 0.784, 0.654], Lf = [-0.706, 0.151, -0.353];
+    const toRgb = (c) => {
+      if (typeof c !== 'string') return [0.8,0.8,0.8];
+      return parseColor(c);
     };
     const faces = [];
     const fc = g.faceColors && g.faceColors.length === g.tris.length;
@@ -1359,7 +1502,17 @@
       const t = g.tris[f];
       const a = project(g.verts[t[0]]), b = project(g.verts[t[1]]), c = project(g.verts[t[2]]);
       if (a[2] <= 0.1) continue;
-      faces.push({ pts: [a, b, c], depth: (a[2]+b[2]+c[2])/3, color: fc ? g.faceColors[f] : col(f + hashStr(model.id)) });
+      const va = g.verts[t[0]], vb = g.verts[t[1]], vc = g.verts[t[2]];
+      const ux = vb[0]-va[0], uy = vb[1]-va[1], uz = vb[2]-va[2];
+      const wx = vc[0]-va[0], wy = vc[1]-va[1], wz = vc[2]-va[2];
+      let nx = uy*wz-uz*wy, ny = uz*wx-ux*wz, nz = ux*wy-uy*wx;
+      const nl = Math.hypot(nx,ny,nz) || 1; nx/=nl; ny/=nl; nz/=nl;
+      const base = toRgb(fc ? g.faceColors[f] : col(f + hashStr(model.id)));
+      const nd = Math.max(nx*Lk[0]+ny*Lk[1]+nz*Lk[2], 0);
+      const ndf = Math.max(nx*Lf[0]+ny*Lf[1]+nz*Lf[2], 0);
+      const sh = nd*0.9 + ndf*0.25 + 0.38;
+      faces.push({ pts: [a, b, c], depth: (a[2]+b[2]+c[2])/3,
+        color: `rgb(${Math.min(255,Math.round(base[0]*sh*255))},${Math.min(255,Math.round(base[1]*sh*255))},${Math.min(255,Math.round(base[2]*sh*255))})` });
     }
     faces.sort((x, y) => y.depth - x.depth);
     for (const f of faces) {
@@ -1368,18 +1521,21 @@
       ctx.lineTo(f.pts[1][0], f.pts[1][1]);
       ctx.lineTo(f.pts[2][0], f.pts[2][1]);
       ctx.closePath();
-      const base = f.color;
-      ctx.fillStyle = base;
-      ctx.globalAlpha = 0.95; ctx.fill();
-      ctx.globalAlpha = 0.12; ctx.strokeStyle = '#000'; ctx.lineWidth = 0.6; ctx.stroke();
+      ctx.fillStyle = f.color;
+      ctx.globalAlpha = 0.97; ctx.fill();
+      ctx.globalAlpha = 0.10; ctx.strokeStyle = '#04070c'; ctx.lineWidth = 0.6; ctx.stroke();
       ctx.globalAlpha = 1;
     }
-    ctx.strokeStyle = 'rgba(255,255,255,.45)'; ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(205,225,255,.5)'; ctx.lineWidth = Math.max(0.8, px/140);
     for (const ln of g.rawLines) {
       const a = project(ln[0]), b = project(ln[1]);
       if (a[2] <= 0.1 || b[2] <= 0.1) continue;
       ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
     }
+    // soft vignette on top
+    const vg = ctx.createRadialGradient(px/2, px/2, px*0.35, px/2, px/2, px*0.75);
+    vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.35)');
+    ctx.fillStyle = vg; ctx.fillRect(0, 0, px, px);
     return cv;
   }
 
