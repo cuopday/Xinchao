@@ -1,1 +1,223 @@
-<h1>Chào</h1>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thư viện 1000+ Mô hình 3D Toán học | Math 3D Model Catalog</title>
+<meta name="description" content="Bộ sưu tập hơn 1000 mô hình 3D toán học từ Tiểu học đến Trung học phổ thông - HTML/WebGL thuần, nhúng lại được vào app khác.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0b1220;color:#e8f0ff;min-height:100vh}
+header{position:sticky;top:0;z-index:50;background:rgba(11,18,32,.92);backdrop-filter:blur(10px);border-bottom:1px solid #223052;padding:14px 22px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+header h1{font-size:19px;font-weight:700;letter-spacing:.3px}
+header h1 span{color:#7cc4ff;font-weight:400;font-size:13px;margin-left:8px}
+.badge{background:#1c2c4d;border:1px solid #2f4a7d;color:#9fd0ff;font-size:11px;padding:3px 10px;border-radius:20px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;width:100%;margin-top:6px}
+.controls input[type=search]{flex:1;min-width:200px;background:#16233d;border:1px solid #2c4370;color:#e8f0ff;padding:9px 14px;border-radius:10px;font-size:14px;outline:none}
+.controls input[type=search]:focus{border-color:#4f8ee0}
+select{background:#16233d;border:1px solid #2c4370;color:#e8f0ff;padding:9px 10px;border-radius:10px;font-size:13px;outline:none;cursor:pointer}
+main{display:flex;gap:0;min-height:calc(100vh - 120px)}
+#gridWrap{flex:1;padding:18px;overflow-y:auto}
+#count{font-size:12px;color:#8fa8cf;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.card{background:#111a2e;border:1px solid #1f2f4f;border-radius:12px;overflow:hidden;cursor:pointer;transition:.15s;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-3px);border-color:#4f8ee0;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.card canvas{width:100%;aspect-ratio:1/1;display:block;background:#0d1522}
+.card .meta{padding:8px 10px}
+.card .name{font-size:12px;font-weight:600;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:30px}
+.card .tags{font-size:10px;color:#7d95bd;margin-top:4px;display:flex;gap:6px;flex-wrap:wrap}
+.tag{background:#1c2c4d;padding:1px 7px;border-radius:8px}
+.pager{display:flex;gap:8px;justify-content:center;padding:18px;flex-wrap:wrap}
+.pager button{background:#16233d;border:1px solid #2c4370;color:#cfe3ff;padding:7px 14px;border-radius:8px;cursor:pointer;font-size:13px}
+.pager button.on{background:#2f5fa8;border-color:#4f8ee0}
+#viewerPanel{width:460px;min-width:340px;background:#0e1626;border-left:1px solid #1f2f4f;padding:18px;display:flex;flex-direction:column;gap:12px;position:sticky;top:118px;height:calc(100vh - 118px);overflow-y:auto}
+#viewerBox{width:100%;height:360px;border-radius:12px;overflow:hidden;border:1px solid #223052;background:#101826}
+#vTitle{font-size:16px;font-weight:700;line-height:1.3}
+#vSub{font-size:12px;color:#8fa8cf}
+#vDesc{font-size:13px;color:#bcd0ee;line-height:1.5;background:#111a2e;padding:10px 12px;border-radius:10px;border:1px solid #1f2f4f}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{flex:1;background:#1c3a6e;border:1px solid #2f5fa8;color:#ddebff;padding:9px 12px;border-radius:10px;cursor:pointer;font-size:13px;text-align:center;transition:.15s}
+.btn:hover{background:#2f5fa8}
+.btn.alt{background:#16233d;border-color:#2c4370}
+pre#embedCode{background:#0a0f1a;border:1px solid #223052;border-radius:10px;padding:12px;font-size:11px;color:#9fd0ff;overflow-x:auto;white-space:pre-wrap;word-break:break-all;line-height:1.5}
+#jsonBox{background:#0a0f1a;border:1px solid #223052;border-radius:10px;padding:12px;font-size:11px;color:#7ce0a0;overflow:auto;max-height:180px;white-space:pre;display:none}
+.hint{font-size:11px;color:#5f7599;line-height:1.6;background:#0e1524;border:1px dashed #223052;padding:10px;border-radius:10px}
+footer{padding:16px 22px;border-top:1px solid #1f2f4f;font-size:12px;color:#5f7599;text-align:center}
+@media(max-width:980px){main{flex-direction:column}#viewerPanel{width:100%;position:static;height:auto;border-left:none;border-top:1px solid #1f2f4f}}
+.loading{text-align:center;padding:60px;color:#7d95bd;font-size:14px;grid-column:1/-1}
+</style>
+</head>
+<body>
+<header>
+  <h1>📐 Math 3D Catalog <span>1000+ mô hình toán học · Tiểu học → Trung học phổ thông</span></h1>
+  <div class="badge" id="totalBadge">đang tải…</div>
+  <div class="controls">
+    <input type="search" id="q" placeholder="🔍 Tìm kiếm (ví dụ: lập phương, pyramid, fraction, fractal, sphere…)">
+    <select id="fLevel"><option value="">Mọi cấp học</option><option>Tiểu học</option><option>Trung học</option></select>
+    <select id="fCat"><option value="">Mọi chủ đề</option></select>
+    <select id="fKind"><option value="">Mọi loại hình</option></select>
+  </div>
+</header>
+
+<main>
+  <div id="gridWrap">
+    <div id="count"></div>
+    <div class="grid" id="grid"><div class="loading">Đang nạp danh mục mô hình…</div></div>
+    <div class="pager" id="pager"></div>
+  </div>
+
+  <aside id="viewerPanel">
+    <div id="vTitle">Chọn một mô hình để xem trước 3D</div>
+    <div id="vSub">Kéo chuột để xoay · Lăn chuột để thu phóng</div>
+    <div id="viewerBox"></div>
+    <div id="vDesc" style="display:none"></div>
+    <div class="row" id="actionRow" style="display:none">
+      <button class="btn" id="btnRotate">⏸ Tự xoay</button>
+      <button class="btn alt" id="btnPNG">🖼 Lưu PNG</button>
+      <button class="btn alt" id="btnJSON">{ } JSON</button>
+      <button class="btn alt" id="btnEmbed">📋 Mã nhúng</button>
+    </div>
+    <pre id="embedCode" style="display:none"></pre>
+    <div id="jsonBox"></div>
+    <div class="hint">💡 <b>Tái sử dụng trong ứng dụng khác:</b> <code>js/math3d.js</code> + <code>js/models.json</code> là module độc lập, không phụ thuộc thư viện ngoài. Chỉ cần copy 2 file này và gọi:<br>
+    • <code>Math3DCatalog.createViewer(el,{model})</code> — viewer 3D tương tác<br>
+    • <code>Math3DCatalog.buildPreviewCanvas(model,px)</code> — ảnh preview tĩnh<br>
+    • <code>Math3DCatalog.buildGeometry(model)</code> — mesh thô {verts,tris}<br>
+    • <code>Math3DCatalog.search(q) / getModel(id)</code><br>
+    Có WebGL2 thì render GPU, không có sẽ tự fallback Canvas2D.</div>
+  </aside>
+</main>
+
+<footer>Math3D Catalog v1.0 · Renderer: WebGL2 + Canvas2D fallback · Dữ liệu sinh bởi js/data-gen.py · Tự do nhúng lại</footer>
+
+<script src="js/math3d.js"></script>
+<script>
+const PAGE = 60;
+let page = 0, filtered = [], viewer = null, current = null;
+const grid = document.getElementById('grid');
+const pager = document.getElementById('pager');
+const $ = id => document.getElementById(id);
+
+async function boot() {
+  await Math3DCatalog.loadModels('js/models.json');
+  const all = Math3DCatalog.models;
+  $('totalBadge').textContent = `${all.length} mô hình`;
+  const cats = [...new Set(all.map(m=>m.category))].sort();
+  const kinds = [...new Set(all.map(m=>m.kind))].sort();
+  cats.forEach(c=>$('fCat').insertAdjacentHTML('beforeend',`<option>${c}</option>`));
+  kinds.forEach(k=>$('fKind').insertAdjacentHTML('beforeend',`<option>${k}</option>`));
+  // deep-link support: ?model=m0001 or #m0001 → open interactive preview directly
+  const qModel = new URLSearchParams(location.search).get('model') || location.hash.replace(/^#/,'');
+  applyFilter();
+  if (qModel) { const m = Math3DCatalog.getModel(qModel); if (m) openModel(m); }
+}
+
+function applyFilter() {
+  const q = $('q').value.trim().toLowerCase();
+  const lv = $('fLevel').value, ct = $('fCat').value, kd = $('fKind').value;
+  filtered = Math3DCatalog.models.filter(m =>
+    (!lv || m.level === lv) && (!ct || m.category === ct) && (!kd || m.kind === kd) &&
+    (!q || m.name.toLowerCase().includes(q) || m.nameEn.toLowerCase().includes(q) || m.desc.toLowerCase().includes(q)));
+  page = 0;
+  renderPage();
+}
+
+function renderPage() {
+  const start = page * PAGE, slice = filtered.slice(start, start + PAGE);
+  $('count').textContent = `Hiển thị ${slice.length}/${filtered.length} mô hình · trang ${page+1}/${Math.max(1,Math.ceil(filtered.length/PAGE))}`;
+  grid.innerHTML = '';
+  if (!slice.length) { grid.innerHTML = '<div class="loading">Không tìm thấy mô hình nào.</div>'; pager.innerHTML=''; return; }
+  const frag = document.createDocumentFragment();
+  slice.forEach(m => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.title = m.desc;
+    let cv;
+    try { cv = Math3DCatalog.buildPreviewCanvas(m, 150); } catch(e) { console.warn('preview fail', m.id, e); }
+    if (cv) card.appendChild(cv);
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.innerHTML = `<div class="name">${m.name}</div><div class="tags"><span class="tag">${m.level}</span><span class="tag">${m.category}</span><span class="tag">#${m.id}</span></div>`;
+    card.appendChild(meta);
+    card.onclick = () => openModel(m);
+    frag.appendChild(card);
+  });
+  grid.appendChild(frag);
+  renderPager();
+}
+
+function renderPager() {
+  const n = Math.ceil(filtered.length / PAGE);
+  pager.innerHTML = '';
+  if (n <= 1) return;
+  const mk = (label, p, on) => {
+    const b = document.createElement('button');
+    b.textContent = label; if (on) b.className = 'on';
+    b.onclick = () => { page = p; renderPage(); };
+    return b;
+  };
+  pager.appendChild(mk('« Đầu', 0, page===0));
+  pager.appendChild(mk('‹ Trước', Math.max(0,page-1), false));
+  const lo = Math.max(0, Math.min(page-2, n-5)), hi = Math.min(n, lo+5);
+  for (let i=lo;i<hi;i++) pager.appendChild(mk(String(i+1), i, i===page));
+  pager.appendChild(mk('Sau ›', Math.min(n-1,page+1), false));
+  pager.appendChild(mk('Cuối »', n-1, page===n-1));
+}
+
+function openModel(m) {
+  current = m;
+  if (!viewer) viewer = Math3DCatalog.createViewer($('viewerBox'), { autoRotate: true });
+  viewer.showModel(m);
+  $('vTitle').textContent = m.name;
+  $('vSub').textContent = `${m.nameEn} · #${m.id} · loại: ${m.kind}`;
+  $('vDesc').style.display = 'block';
+  $('vDesc').textContent = m.desc;
+  $('actionRow').style.display = 'flex';
+  $('embedCode').style.display = 'none';
+  $('jsonBox').style.display = 'none';
+  history.replaceState(null, '', '#' + m.id); // shareable direct-preview link
+  $('btnRotate').textContent = viewer.autoRotate ? '⏸ Tạm dừng xoay' : '▶ Tự xoay';
+  if (window.innerWidth < 980) $('viewerPanel').scrollIntoView({behavior:'smooth'});
+}
+
+$('btnRotate').onclick = () => { if(!viewer)return; viewer.autoRotate=!viewer.autoRotate; $('btnRotate').textContent = viewer.autoRotate?'⏸ Tạm dừng xoay':'▶ Tự xoay'; };
+$('btnPNG').onclick = () => {
+  if (!current) return;
+  const cv = Math3DCatalog.buildPreviewCanvas(current, 512);
+  const a = document.createElement('a');
+  a.download = `math3d-${current.id}.png`;
+  a.href = cv.toDataURL('image/png');
+  a.click();
+};
+$('btnJSON').onclick = () => {
+  const box = $('jsonBox');
+  box.style.display = box.style.display==='block'?'none':'block';
+  box.textContent = JSON.stringify(current, null, 2);
+};
+$('btnEmbed').onclick = () => {
+  const pre = $('embedCode');
+  pre.style.display = pre.style.display==='block'?'none':'block';
+  pre.textContent =
+`<!-- Nhúng vào ứng dụng khác -->
+<div id="my3d" style="width:400px;height:300px"></div>
+<script src="js/math3d.js"><\/script>
+<script>
+  Math3DCatalog.loadModels('js/models.json').then(() => {
+    const model = Math3DCatalog.getModel('${current ? current.id : 'm0001'}');
+    const viewer = Math3DCatalog.createViewer(
+      document.getElementById('my3d'), { model });
+    // API: viewer.showModel(model) · Math3DCatalog.buildPreviewCanvas(model, px)
+    //      Math3DCatalog.search('cube') · Math3DCatalog.buildGeometry(model)
+  });
+<\/script>`;
+};
+
+let t0;
+$('q').addEventListener('input', () => { clearTimeout(t0); t0 = setTimeout(applyFilter, 250); });
+$('fLevel').onchange = applyFilter;
+$('fCat').onchange = applyFilter;
+$('fKind').onchange = applyFilter;
+boot();
+</script>
+</body>
+</html>
