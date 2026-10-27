@@ -1216,6 +1216,8 @@
       this.model = null; this.geo = null; this.glObj = null;
       this.dragging = false; this.last = null;
       this.fitDist = 1;
+      // optional classroom overlays: {lines:[[a,b]], color, fillLoops:[loop,...], fillColor}
+      this.overlay = opts.overlay || null;
       this._bgGrad = null; // cached gradient key
       this._buildDom();
       this._initGL();
@@ -1266,31 +1268,43 @@
     showModel(model) {
       this.model = model;
       try { this.geo = buildGeometry(model); } catch (err) { console.warn('build fail', err); this.geo = buildPlatonic(1, 1.5); }
+      this._geoDirty = true;
+      this._uploadGeo();
       // fit distance
       let maxR = 0.5;
       for (const v of this.geo.verts) maxR = Math.max(maxR, Math.hypot(...v));
       this.fitDist = maxR;
       this.hud.textContent = `${model.name} · ${model.category} · ${model.level}`;
-      if (this.gl) {
-        this.glObj = prepBuffers(this.gl, this.geo);
-        const gl = this.gl;
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.triBuf);
-        gl.bufferData(gl.ARRAY_BUFFER, this.glObj.tri, gl.STATIC_DRAW);
-        gl.bindVertexArray(this.triVAO);
-        gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 36, 0);
-        gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 36, 12);
-        gl.enableVertexAttribArray(2); gl.vertexAttribPointer(2, 3, gl.FLOAT, false, 36, 24);
-        if (this.glObj.index) {
-          if (!this.idxBuf) this.idxBuf = gl.createBuffer();
-          gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.idxBuf);
-          gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.glObj.index, gl.STATIC_DRAW);
-        }
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.lineBuf);
-        gl.bufferData(gl.ARRAY_BUFFER, this.glObj.lines, gl.STATIC_DRAW);
-        gl.bindVertexArray(this.lineVAO);
-        gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 12, 0);
-        gl.bindVertexArray(null);
+    }
+    setGeometry(geo) {
+      // replace the rendered geometry in place (used by fold/unfold animation)
+      this.geo = geo;
+      let maxR = 0.5;
+      for (const v of geo.verts) maxR = Math.max(maxR, Math.hypot(...v));
+      this.fitDist = maxR;
+      this._geoDirty = true;
+      this._uploadGeo();
+    }
+    _uploadGeo() {
+      if (!this.gl || !this.geo) return;
+      this.glObj = prepBuffers(this.gl, this.geo);
+      const gl = this.gl;
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.triBuf);
+      gl.bufferData(gl.ARRAY_BUFFER, this.glObj.tri, gl.STATIC_DRAW);
+      gl.bindVertexArray(this.triVAO);
+      gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 36, 0);
+      gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 36, 12);
+      gl.enableVertexAttribArray(2); gl.vertexAttribPointer(2, 3, gl.FLOAT, false, 36, 24);
+      if (this.glObj.index) {
+        if (!this.idxBuf) this.idxBuf = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.idxBuf);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.glObj.index, gl.STATIC_DRAW);
       }
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.lineBuf);
+      gl.bufferData(gl.ARRAY_BUFFER, this.glObj.lines, gl.STATIC_DRAW);
+      gl.bindVertexArray(this.lineVAO);
+      gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 12, 0);
+      gl.bindVertexArray(null);
     }
     resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -1398,6 +1412,76 @@
       gl.bindVertexArray(this.lineVAO);
       gl.drawArrays(gl.LINES, 0, this.glObj.lines.length / 3);
       gl.bindVertexArray(null);
+      // ---- classroom overlay (cross-section plane, nets, highlights) ----
+      if (this.overlay && ((this.overlay.lines && this.overlay.lines.length) || (this.overlay.fillLoops && this.overlay.fillLoops.length))) {
+        const oLines = [], oFill = [];
+        const oc = parseColor(this.overlay.color || '#ff5d8f');
+        if (this.overlay.lines) for (const ln of this.overlay.lines) { oLines.push(ln[0], ln[1]); }
+        if (this.overlay.fillLoops) for (const loop of this.overlay.fillLoops) {
+          for (const s of loop) oFill.push(s[0]);
+        }
+        // triangulate each closed loop as a fan about its centroid → flat filled polygon
+        const fanData = [];
+        if (this.overlay.fillLoops) for (const loop of this.overlay.fillLoops) {
+          const pts = []; loop.forEach(s => pts.push(s[0]));
+          if (pts.length < 3) continue;
+          const c0 = [0, 0, 0]; pts.forEach(p => { c0[0] += p[0]; c0[1] += p[1]; c0[2] += p[2]; });
+          c0[0] /= pts.length; c0[1] /= pts.length; c0[2] /= pts.length;
+          for (let i = 0; i < pts.length; i++) fanData.push([c0, pts[i], pts[(i + 1) % pts.length]]);
+        }
+        if (fanData.length) {
+          if (!this.ovFillBuf) { this.ovFillProg = this._program(VS, FS); this.ovFillVAO = gl.createVertexArray(); this.ovFillBuf = gl.createBuffer(); }
+          const fd2 = new Float32Array(fanData.length * 9);
+          let m = 0;
+          for (const t of fanData) {
+            const a = t[0], b = t[1], c = t[2];
+            let nx = (b[1]-a[1])*(c[2]-a[2]) - (b[2]-a[2])*(c[1]-a[1]);
+            let ny = (b[2]-a[2])*(c[0]-a[0]) - (b[0]-a[0])*(c[2]-a[2]);
+            let nz = (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0]);
+            const nl = Math.hypot(nx, ny, nz) || 1;
+            nx/=nl; ny/=nl; nz/=nl;
+            const fc = this.overlay.fillColor || '#ff5d8f';
+            const cc = parseColor(fc);
+            // shader expects color in 0..1 via attribute? check VS layout: pos(3) nrm(3) col(3)
+            for (const p of [a, b, c]) { fd2[m++] = p[0]; fd2[m++] = p[1]; fd2[m++] = p[2]; fd2[m++] = nx; fd2[m++] = ny; fd2[m++] = nz; fd2[m++] = cc[0]; fd2[m++] = cc[1]; fd2[m++] = cc[2]; }
+          }
+          gl.useProgram(this.ovFillProg);
+          gl.uniformMatrix4fv(gl.getUniformLocation(this.ovFillProg, 'uMVP'), false, mvp);
+          gl.uniformMatrix4fv(gl.getUniformLocation(this.ovFillProg, 'uMV'), false, mv);
+          gl.uniformMatrix3fv(gl.getUniformLocation(this.ovFillProg, 'uNM'), false, nm);
+          gl.uniform1f(gl.getUniformLocation(this.ovFillProg, 'uAlpha'), 0.5);
+          gl.bindVertexArray(this.ovFillVAO);
+          gl.bindBuffer(gl.ARRAY_BUFFER, this.ovFillBuf);
+          gl.bufferData(gl.ARRAY_BUFFER, fd2, gl.DYNAMIC_DRAW);
+          gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 36, 0);
+          gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 36, 12);
+          gl.enableVertexAttribArray(2); gl.vertexAttribPointer(2, 3, gl.FLOAT, false, 36, 24);
+          gl.disable(gl.CULL_FACE);
+          gl.depthMask(false);
+          gl.drawArrays(gl.TRIANGLES, 0, fanData.length * 3);
+          gl.depthMask(true);
+          gl.enable(gl.CULL_FACE);
+          gl.bindVertexArray(null);
+        }
+        if (oLines.length) {
+          const ld = new Float32Array(oLines.length * 6);
+          let idx = 0;
+          for (const ln of oLines) {
+            ld[idx++] = ln[0][0]; ld[idx++] = ln[0][1]; ld[idx++] = ln[0][2];
+            ld[idx++] = ln[1][0]; ld[idx++] = ln[1][1]; ld[idx++] = ln[1][2];
+          }
+          if (!this.ovLineBuf) { this.ovLineVAO = gl.createVertexArray(); this.ovLineBuf = gl.createBuffer(); }
+          gl.useProgram(this.lineProg);
+          gl.uniformMatrix4fv(gl.getUniformLocation(this.lineProg, 'uMVP'), false, mvp);
+          gl.uniform4f(gl.getUniformLocation(this.lineProg, 'uColor'), oc[0], oc[1], oc[2], 1.0);
+          gl.bindVertexArray(this.ovLineVAO);
+          gl.bindBuffer(gl.ARRAY_BUFFER, this.ovLineBuf);
+          gl.bufferData(gl.ARRAY_BUFFER, ld, gl.DYNAMIC_DRAW);
+          gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 12, 0);
+          gl.drawArrays(gl.LINES, 0, oLines.length * 2);
+          gl.bindVertexArray(null);
+        }
+      }
       gl.depthMask(true);
       gl.disable(gl.BLEND);
     }
@@ -1460,7 +1544,30 @@
         if (a[2] <= 0 || b[2] <= 0) continue;
         ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
       }
+      // ---- classroom overlay (cross-section fill + outline) in 2D fallback ----
+      if (this.overlay && ((this.overlay.fillLoops && this.overlay.fillLoops.length) || (this.overlay.lines && this.overlay.lines.length))) {
+        const oc = this.overlay.color || '#ff5d8f';
+        if (this.overlay.fillLoops) for (const loop of this.overlay.fillLoops) {
+          const pts = []; loop.forEach(s => pts.push(s[0]));
+          if (pts.length < 3) continue;
+          ctx.beginPath();
+          let started = false;
+          for (const p of pts) { const q = project(p); if (q[2] <= 0) { started = false; continue; } if (!started) { ctx.moveTo(q[0], q[1]); started = true; } else ctx.lineTo(q[0], q[1]); }
+          ctx.closePath();
+          ctx.globalAlpha = 0.45; ctx.fillStyle = this.overlay.fillColor || oc; ctx.fill();
+          ctx.globalAlpha = 1; ctx.strokeStyle = oc; ctx.lineWidth = 2; ctx.stroke();
+        }
+        if (this.overlay.lines) {
+          ctx.strokeStyle = oc; ctx.lineWidth = 2; ctx.globalAlpha = 1;
+          for (const ln of this.overlay.lines) {
+            const a = project(ln[0]), b = project(ln[1]);
+            if (a[2] <= 0 || b[2] <= 0) continue;
+            ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+          }
+        }
+      }
     }
+    setOverlay(o) { this.overlay = o || null; }
     dispose() { cancelAnimationFrame(this._raf); }
   }
 

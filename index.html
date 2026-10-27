@@ -45,38 +45,180 @@ pre#embedCode{background:#0a0f1a;border:1px solid #223052;border-radius:10px;pad
 footer{padding:16px 22px;border-top:1px solid #1f2f4f;font-size:12px;color:#5f7599;text-align:center}
 @media(max-width:980px){main{flex-direction:column}#viewerPanel{width:100%;position:static;height:auto;border-left:none;border-top:1px solid #1f2f4f}}
 .loading{text-align:center;padding:60px;color:#7d95bd;font-size:14px;grid-column:1/-1}
+/* ---- classroom tabs ---- */
+.tabs{display:flex;gap:4px;border-bottom:1px solid #223052;flex-wrap:wrap}
+.tab{background:transparent;border:none;border-bottom:2px solid transparent;color:#8fa8cf;padding:8px 13px;font-size:13px;cursor:pointer;border-radius:8px 8px 0 0}
+.tab:hover{color:#cfe3ff}
+.tab.on{color:#7cc4ff;border-bottom-color:#4f8ee0;background:#111a2e}
+.tabBody{display:none;font-size:13px;line-height:1.55;color:#bcd0ee}
+.tabBody.on{display:block}
+.mrow{display:flex;justify-content:space-between;gap:10px;padding:7px 10px;border-bottom:1px solid #16233d;border-radius:6px}
+.mrow:nth-child(odd){background:#0f1728}
+.mrow .lab{color:#8fa8cf}.mrow .val{font-weight:700;color:#e8f0ff;text-align:right}
+.mrow .frm{font-size:10px;color:#5f7599;display:block;text-align:right}
+.netNote,.secNote{background:#0e1524;border:1px solid #1f2f4f;border-radius:10px;padding:10px;font-size:12px;color:#9fd0ff;margin-top:10px;line-height:1.5}
+.sliderRow{display:flex;align-items:center;gap:10px;margin-top:10px}
+.sliderRow input[type=range]{flex:1;accent-color:#4f8ee0}
+.sliderRow label{font-size:12px;color:#8fa8cf;white-space:nowrap}
+.miniBtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.miniBtns button{background:#16233d;border:1px solid #2c4370;color:#cfe3ff;padding:6px 11px;border-radius:8px;cursor:pointer;font-size:12px}
+.miniBtns button.on{background:#2f5fa8;border-color:#4f8ee0}
+.quizQ{background:#111a2e;border:1px solid #1f2f4f;border-radius:10px;padding:12px;margin-bottom:10px}
+.quizQ .qtext{font-weight:600;margin-bottom:8px}
+.quizQ .opt{display:block;width:100%;text-align:left;background:#0e1524;border:1px solid #223052;color:#cfe3ff;padding:7px 10px;border-radius:8px;margin:4px 0;cursor:pointer;font-size:12px}
+.quizQ .opt:hover{border-color:#4f8ee0}
+.quizQ .opt.correct{background:#123b26;border-color:#2e8b57;color:#a8f0c8}
+.quizQ .opt.wrong{background:#3b1a22;border-color:#a04055;color:#ffb4c0}
+.quizQ .explain{display:none;font-size:11px;color:#9fd0ff;background:#0e1524;border-left:3px solid #4f8ee0;padding:8px;border-radius:6px;margin-top:6px}
+.lessonBox h4{color:#7cc4ff;font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 4px}
+.lessonBox ul,.lessonBox ol{margin-left:18px;color:#bcd0ee}
+.lessonBox li{margin:3px 0}
+.partsList .pitem{background:#111a2e;border:1px solid #1f2f4f;border-left:4px solid #4a7fc1;border-radius:8px;padding:9px 11px;margin-bottom:8px}
+.partsList .pname{font-weight:700;font-size:13px}
+.partsList .pnote{font-size:12px;color:#9fd0ff;margin-top:3px}
+.secShape{font-size:15px;font-weight:800;color:#ff9ec0;margin-top:8px}
+.starBtn{background:none;border:none;cursor:pointer;font-size:15px;padding:0 4px;color:#5f7599;line-height:1}
+.starBtn.on{color:#ffd75e}
+.favChip{background:#3a2f14;border:1px solid #7d6420;color:#ffd75e;font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer}
+#printArea{display:none}
+@media print{body>*{display:none!important}#printArea{display:block!important}}
+/* ---- curriculum (chủ đề / bài học) ---- */
+#crBar{display:flex;gap:8px;width:100%;overflow-x:auto;padding:4px 0 2px;scrollbar-width:thin}
+.crChip{flex:0 0 auto;background:#16233d;border:1px solid #2c4370;color:#cfe3ff;padding:7px 13px;border-radius:20px;cursor:pointer;font-size:12.5px;display:flex;flex-direction:column;align-items:center;gap:1px;transition:.15s}
+.crChip small{font-size:10px;color:#7d95bd}
+.crChip:hover{border-color:#4f8ee0}
+.crChip.on{background:#2f5fa8;border-color:#7cc4ff}
+.crChip.on small{color:#ddebff}
+#lessonPanel{display:none;margin-bottom:14px;background:#0e1626;border:1px solid #2f4a7d;border-radius:14px;padding:14px 16px}
+#lessonPanel.on{display:block}
+#lpHead{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+#lpTitle{font-size:16px;font-weight:700;line-height:1.3;flex:1;min-width:220px}
+#lpBlock{font-size:11px;color:#7cc4ff;text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
+#lpClose{background:none;border:1px solid #2c4370;color:#8fa8cf;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px}
+.lpSec{margin-top:10px}
+.lpSec h5{font-size:11px;color:#8fa8cf;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.lpSec ul,.lpSec ol{margin-left:18px;font-size:13px;color:#bcd0ee;line-height:1.55}
+#lpModels{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-top:10px}
+#lpProgress{height:6px;background:#16233d;border-radius:4px;overflow:hidden;margin-top:8px}
+#lpProgress i{display:block;height:100%;background:#3fae6a;width:0%;transition:.3s}
+.card{position:relative}
+.lessonDone{outline:2px solid #3fae6a !important}
+.lessonDone::after{content:'✓';position:absolute;top:4px;right:6px;color:#7ce0a0;font-weight:800;font-size:14px;text-shadow:0 1px 3px #000;z-index:3}
+.mrTag{position:absolute;top:5px;left:5px;background:rgba(20,32,58,.85);border:1px solid #2f4a7d;color:#9fd0ff;font-size:9px;padding:1px 6px;border-radius:8px;z-index:2}
+.btn.doneBtn{background:#1c4a30;border-color:#3fae6a}
 </style>
 </head>
 <body>
 <header>
   <h1>📐 Math 3D Catalog <span>1000+ mô hình toán học · Tiểu học → Trung học phổ thông</span></h1>
   <div class="badge" id="totalBadge">đang tải…</div>
+  <div class="favChip" id="favChip" title="Lọc theo mục yêu thích">⭐ 0</div>
   <div class="controls">
     <input type="search" id="q" placeholder="🔍 Tìm kiếm (ví dụ: lập phương, pyramid, fraction, fractal, sphere…)">
     <select id="fLevel"><option value="">Mọi cấp học</option><option>Tiểu học</option><option>Trung học</option></select>
     <select id="fCat"><option value="">Mọi chủ đề</option></select>
     <select id="fKind"><option value="">Mọi loại hình</option></select>
+    <button class="btn alt" id="btnPrintSel" style="flex:0 0 auto" title="In phiếu bài tập cho các mô hình đang hiện trên trang">🖨 In phiếu bài tập</button>
   </div>
+  <div id="crBar" aria-label="Chủ đề chương trình"></div>
 </header>
 
 <main>
   <div id="gridWrap">
+    <!-- Bài học đang chọn (curriculum) -->
+    <section id="lessonPanel">
+      <div id="lpHead">
+        <div style="flex:1;min-width:220px">
+          <div id="lpTitle"></div>
+          <div id="lpBlock"></div>
+        </div>
+        <div class="row" style="flex:0 0 auto;width:auto">
+          <button class="btn alt" id="btnLessonWorksheet" title="In phiếu học tập cho cả bài">🖨 In phiếu bài học</button>
+          <button class="btn alt" id="btnLessonExport" title="Tải trang HTML tự chứa của bài học (nhúng vào LMS/app khác)">⬇ Trang bài học</button>
+          <button class="btn alt" id="btnLessonJSON" title="Tải cây chủ đề→bài học→mã số mô hình (dùng cho app khác, không cần module)">⬇ JSON bài học</button>
+          <button id="lpClose">✕ Thu gọn</button>
+        </div>
+      </div>
+      <div class="lpSec"><h5>Mục tiêu bài học</h5><ul id="lpObj"></ul></div>
+      <div class="lpSec"><h5>Hoạt động với mô hình 3D</h5><ol id="lpAct"></ol></div>
+      <div class="lpSec"><h5>Bài tập về nhà</h5><div id="lpHw" style="font-size:13px;color:#bcd0ee"></div></div>
+      <div id="lpProgress"><i></i></div>
+      <div style="font-size:11px;color:#7d95bd;margin-top:4px" id="lpProgTxt"></div>
+      <div id="lpModels"></div>
+    </section>
     <div id="count"></div>
     <div class="grid" id="grid"><div class="loading">Đang nạp danh mục mô hình…</div></div>
     <div class="pager" id="pager"></div>
   </div>
 
   <aside id="viewerPanel">
-    <div id="vTitle">Chọn một mô hình để xem trước 3D</div>
-    <div id="vSub">Kéo chuột để xoay · Lăn chuột để thu phóng</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="flex:1"><div id="vTitle">Chọn một mô hình để xem trước 3D</div><div id="vSub">Kéo chuột để xoay · Lăn chuột để thu phóng</div></div>
+      <button class="starBtn" id="btnFav" title="Đánh dấu yêu thích (lưu trong trình duyệt)">☆</button>
+    </div>
     <div id="viewerBox"></div>
-    <div id="vDesc" style="display:none"></div>
     <div class="row" id="actionRow" style="display:none">
       <button class="btn" id="btnRotate">⏸ Tự xoay</button>
       <button class="btn alt" id="btnPNG">🖼 Lưu PNG</button>
+      <button class="btn alt" id="btnOBJ" title="Xuất mesh .obj cho Blender/In 3D">⬇ OBJ</button>
       <button class="btn alt" id="btnJSON">{ } JSON</button>
       <button class="btn alt" id="btnEmbed">📋 Mã nhúng</button>
+      <button class="btn alt" id="btnDone" title="Đánh dấu mô hình này đã học xong trong bài (phím tắt: d)">✓ Đã học</button>
     </div>
+    <div id="vDesc" style="display:none"></div>
+
+    <!-- ======= CLASSROOM TABS ======= -->
+    <div class="tabs" id="crTabs" style="display:none">
+      <button class="tab on" data-t="tFormula">📐 Công thức</button>
+      <button class="tab" data-t="tNet">📦 Gấp/Mở</button>
+      <button class="tab" data-t="tSlice">🔪 Mặt cắt</button>
+      <button class="tab" data-t="tQuiz">❓ Trắc nghiệm</button>
+      <button class="tab" data-t="tLesson">🎓 Giáo án</button>
+      <button class="tab" data-t="tLink">📚 Bài học</button>
+    </div>
+
+    <div class="tabBody on" id="tFormula">
+      <div id="metricsBox"></div>
+      <div class="partsList" id="partsBox"></div>
+    </div>
+
+    <div class="tabBody" id="tNet">
+      <div id="netInfo" style="font-size:12px;color:#9fd0ff"></div>
+      <div class="sliderRow"><label>Gấp ⇄ Mở</label><input type="range" id="foldSlider" min="0" max="100" value="0"><span id="foldVal" style="font-size:11px;color:#7cc4ff;width:34px">0%</span></div>
+      <div class="miniBtns">
+        <button id="btnFoldAnim">▶ Xem gấp hình</button>
+        <button id="btnPrintNet" title="In phiếu khai triển để cắt & gấp bằng giấy">🖨 In khai triển</button>
+      </div>
+      <canvas id="netCanvas" width="420" height="300" style="width:100%;background:#f6f2e8;border-radius:10px;margin-top:10px;border:1px solid #2c4370;display:none"></canvas>
+      <div class="netNote" id="netNote" style="display:none"></div>
+    </div>
+
+    <div class="tabBody" id="tSlice">
+      <div class="miniBtns" id="secModes">
+        <button data-m="horizontal" class="on">Ngang (∥ đáy)</button>
+        <button data-m="vertical">Dọc (qua trục)</button>
+        <button data-m="diagonal">Nghiêng</button>
+      </div>
+      <div class="sliderRow"><label>Vị trí cắt</label><input type="range" id="secSlider" min="-95" max="95" value="0"><span id="secVal" style="font-size:11px;color:#ff9ec0;width:34px">0</span></div>
+      <div class="secShape" id="secShape"></div>
+      <div class="secNote" id="secLesson"></div>
+    </div>
+
+    <div class="tabBody" id="tQuiz">
+      <div id="quizBox"></div>
+      <div class="miniBtns"><button id="btnNewQuiz">🔀 Bộ câu hỏi khác</button><span id="quizScore" style="font-size:12px;color:#7ce0a0;align-self:center"></span></div>
+    </div>
+
+    <div class="tabBody lessonBox" id="tLesson">
+      <div id="lessonBox"></div>
+      <div class="miniBtns"><button id="btnPrintLesson">🖨 In giáo án + phiếu</button></div>
+    </div>
+
+    <div class="tabBody" id="tLink">
+      <div id="linkBox"></div>
+      <div class="miniBtns"><button id="btnGoLesson">➜ Mở bài học gốc</button></div>
+    </div>
+
     <pre id="embedCode" style="display:none"></pre>
     <div id="jsonBox"></div>
     <div class="hint">💡 <b>Tái sử dụng trong ứng dụng khác:</b> <code>js/math3d.js</code> + <code>js/models.json</code> là module độc lập, không phụ thuộc thư viện ngoài. Chỉ cần copy 2 file này và gọi:<br>
@@ -84,19 +226,33 @@ footer{padding:16px 22px;border-top:1px solid #1f2f4f;font-size:12px;color:#5f75
     • <code>Math3DCatalog.buildPreviewCanvas(model,px)</code> — ảnh preview tĩnh<br>
     • <code>Math3DCatalog.buildGeometry(model)</code> — mesh thô {verts,tris}<br>
     • <code>Math3DCatalog.search(q) / getModel(id)</code><br>
-    Có WebGL2 thì render GPU, không có sẽ tự fallback Canvas2D.</div>
+    Có WebGL2 thì render GPU, không có sẽ tự fallback Canvas2D.<br><br>
+    📚 <b>Theo bài học/chủ đề:</b> thêm <code>js/curriculum.js</code> + <code>js/curriculum.json</code> rồi gọi
+    <code>Math3DCurriculum.load()</code> → <code>.themes / .lessons / .lessonModels('TC-8B') / .matchModel(m) / .exportJSON()</code>.</div>
   </aside>
 </main>
 
 <footer>Math3D Catalog v1.0 · Renderer: WebGL2 + Canvas2D fallback · Dữ liệu sinh bởi js/data-gen.py · Tự do nhúng lại</footer>
 
 <script src="js/math3d.js"></script>
+<script src="js/classroom.js"></script>
+<script src="js/curriculum.js"></script>
 <script>
 const PAGE = 60;
 let page = 0, filtered = [], viewer = null, current = null;
+let folderCtx = null;            // {folder, t} when fold/unfold active
+let favOnly = false;
+let curTheme = null, curLesson = null;   // curriculum state
 const grid = document.getElementById('grid');
 const pager = document.getElementById('pager');
 const $ = id => document.getElementById(id);
+
+/* ---------- favourites (localStorage) ---------- */
+const FAVKEY = 'math3d-favs-v1';
+let favs = new Set();
+try { favs = new Set(JSON.parse(localStorage.getItem(FAVKEY) || '[]')); } catch (e) {}
+function saveFavs() { localStorage.setItem(FAVKEY, JSON.stringify([...favs])); $('favChip').textContent = `⭐ ${favs.size}`; }
+saveFavs();
 
 async function boot() {
   await Math3DCatalog.loadModels('js/models.json');
@@ -106,10 +262,126 @@ async function boot() {
   const kinds = [...new Set(all.map(m=>m.kind))].sort();
   cats.forEach(c=>$('fCat').insertAdjacentHTML('beforeend',`<option>${c}</option>`));
   kinds.forEach(k=>$('fKind').insertAdjacentHTML('beforeend',`<option>${k}</option>`));
+  // curriculum: chủ đề → bài học (lỗi nạp không chặn app)
+  try {
+    await Math3DCurriculum.load('js/curriculum.json');
+    buildThemeBar();
+  } catch(e) { console.warn('curriculum chưa nạp được:', e); }
   // deep-link support: ?model=m0001 or #m0001 → open interactive preview directly
-  const qModel = new URLSearchParams(location.search).get('model') || location.hash.replace(/^#/,'');
+  //                    #lesson=TC-8B → mở bài học
+  const qp = new URLSearchParams(location.search);
+  const qModel = qp.get('model') || (/^#(?!lesson=)/.test(location.hash) ? location.hash.slice(1) : '');
+  const qLesson = qp.get('lesson') || (location.hash.startsWith('#lesson=') ? location.hash.slice(8) : '');
   applyFilter();
-  if (qModel) { const m = Math3DCatalog.getModel(qModel); if (m) openModel(m); }
+  if (qLesson && Math3DCurriculum.getLesson(qLesson)) selectLesson(qLesson);
+  else if (qModel) { const m = Math3DCatalog.getModel(qModel); if (m) openModel(m); }
+}
+
+/* ================= CURRICULUM UI ================= */
+function buildThemeBar() {
+  const bar = $('crBar');
+  bar.innerHTML = '';
+  const mk = (label, sub, code) => {
+    const b = document.createElement('button');
+    b.className = 'crChip' + ((code||null)===curTheme ? ' on':'');
+    b.innerHTML = `${label}${sub?`<small>${sub}</small>`:''}`;
+    b.onclick = () => { curTheme = code||null;
+      bar.querySelectorAll('.crChip').forEach(x=>x.classList.toggle('on', x===b));
+      if (!code) { closeLesson(); } else renderThemeLessons(code);
+      history.replaceState(null,'', code? '#theme='+code : location.pathname+location.search);
+    };
+    return b;
+  };
+  bar.appendChild(mk('🗂 Tất cả mô hình','', null));
+  Math3DCurriculum.themes.forEach(t => bar.appendChild(mk(`📚 ${t.name}`, `${t.lessonObjs.length} bài · ${t.modelCount} mô hình`, t.code)));
+  if (curTheme) renderThemeLessons(curTheme);
+}
+
+function renderThemeLessons(code) {
+  const t = Math3DCurriculum.getTheme(code); if (!t) return;
+  // hiển thị các bài của chủ đề dưới dạng hàng chip thứ hai trong lessonPanel collapsed-mode
+  openLessonPanel({ __themeList: t });
+}
+
+function openLessonPanel(lsOrTheme) {
+  const p = $('lessonPanel');
+  p.classList.add('on');
+  if (lsOrTheme.__themeList) {
+    const t = lsOrTheme.__themeList;
+    curLesson = null;
+    $('lpTitle').innerHTML = `📚 Chủ đề: ${esc(t.name)}`;
+    $('lpBlock').textContent = t.desc;
+    $('lpObj').innerHTML = t.lessonObjs.map(l=>`<li><a href="#lesson=${l.code}" data-lc="${l.code}" class="lpLsLink" style="color:#7cc4ff">${esc(l.title)}</a> <span style="color:#5f7599;font-size:11px">— Lớp ${l.grade} · ${l.modelIds.length} mô hình</span></li>`).join('');
+    $('lpAct').innerHTML = '';
+    $('lpHw').innerHTML = '<span style="color:#5f7599">Chọn một bài học ở trên để xem chi tiết.</span>';
+    $('lpModels').innerHTML = '';
+    updateProgressUI();
+    $('lpObj').querySelectorAll('.lpLsLink').forEach(a=>a.onclick=e=>{e.preventDefault();selectLesson(a.dataset.lc);});
+    return;
+  }
+  const ls = lsOrTheme; curLesson = ls.code;
+  history.replaceState(null,'','#lesson='+ls.code);
+  $('lpTitle').innerHTML = `🎯 ${esc(ls.title)}`;
+  $('lpBlock').textContent = `${Math3DCurriculum.bandName(ls.band)} · Lớp ${ls.grade} — ${ls.block}`;
+  $('lpObj').innerHTML = (ls.objectives||[]).map(o=>`<li>${esc(o)}</li>`).join('');
+  $('lpAct').innerHTML = (ls.activities||[]).map(o=>`<li>${esc(o)}</li>`).join('');
+  $('lpHw').textContent = ls.homework || '—';
+  const ms = Math3DCurriculum.lessonModels(ls.code, 24);
+  $('lpModels').innerHTML = '';
+  ms.forEach(m => $('lpModels').appendChild(makeCard(m, true)));
+  updateProgressUI();
+  // lọc lưới chính theo đúng bộ mô hình của bài học
+  filtered = ms.slice(); page = 0; renderPage();
+  $('count').textContent = `Bài học có ${ms.length} mô hình — kéo thanh bên phải để xem từng mô hình 3D.`;
+}
+
+function updateProgressUI() {
+  const box = $('lpProgress'), txt = $('lpProgTxt');
+  if (!curLesson) { box.querySelector('i').style.width='0%'; txt.textContent=''; return; }
+  const pr = Math3DCurriculum.progress.lessonProgress(curLesson);
+  box.querySelector('i').style.width = (pr.total? Math.round(pr.done/pr.total*100):0)+'%';
+  txt.textContent = `Tiến độ bài học: ${pr.done}/${pr.total} mô hình đã đánh dấu “Đã học”`;
+}
+
+function closeLesson() {
+  curLesson = null;
+  $('lessonPanel').classList.remove('on');
+  applyFilter();
+}
+$('lpClose').onclick = closeLesson;
+
+function selectLesson(code) {
+  const ls = Math3DCurriculum.getLesson(code); if (!ls) return;
+  // tự bật chip chủ đề chứa bài học (nếu có)
+  const t = Math3DCurriculum.themes.find(x => x.lessons.includes(code));
+  curTheme = t ? t.code : null;
+  document.querySelectorAll('#crBar .crChip').forEach(b => b.classList.toggle('on', t ? b.textContent.includes(t.name) : !b.querySelector('small') && b.textContent.includes('Tất cả')));
+  openLessonPanel(ls);
+  $('lessonPanel').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* card factory (dùng chung cho grid & lesson strip) */
+function makeCard(m, inLesson) {
+  const card = document.createElement('div');
+  card.className = 'card' + (Math3DCurriculum.progress.isDone(m.id) ? ' lessonDone':'');
+  card.title = m.desc;
+  let cv; try { cv = Math3DCatalog.buildPreviewCanvas(m, 150); } catch(e){}
+  if (cv) card.appendChild(cv);
+  if (Math3DCurriculum.data) {
+    const mm = Math3DCurriculum.matchModel(m);
+    if (mm.lessons.length) {
+      const tag = document.createElement('span');
+      tag.className = 'mrTag';
+      tag.textContent = '🎯 ' + (Math3DCurriculum.getLesson(mm.lessons[0])||{title:''}).title.split('(')[0].trim().slice(0,26);
+      card.appendChild(tag);
+    }
+  }
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  meta.innerHTML = `<div class="name">${esc(m.name)}</div><div class="tags"><span class="tag">${m.level}</span><span class="tag">${m.category}</span><span class="tag">#${m.id}</span></div>`;
+  card.appendChild(meta);
+  card.onclick = () => openModel(m);
+  return card;
 }
 
 function applyFilter() {
@@ -117,6 +389,7 @@ function applyFilter() {
   const lv = $('fLevel').value, ct = $('fCat').value, kd = $('fKind').value;
   filtered = Math3DCatalog.models.filter(m =>
     (!lv || m.level === lv) && (!ct || m.category === ct) && (!kd || m.kind === kd) &&
+    (!favOnly || favs.has(m.id)) &&
     (!q || m.name.toLowerCase().includes(q) || m.nameEn.toLowerCase().includes(q) || m.desc.toLowerCase().includes(q)));
   page = 0;
   renderPage();
@@ -128,20 +401,7 @@ function renderPage() {
   grid.innerHTML = '';
   if (!slice.length) { grid.innerHTML = '<div class="loading">Không tìm thấy mô hình nào.</div>'; pager.innerHTML=''; return; }
   const frag = document.createDocumentFragment();
-  slice.forEach(m => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.title = m.desc;
-    let cv;
-    try { cv = Math3DCatalog.buildPreviewCanvas(m, 150); } catch(e) { console.warn('preview fail', m.id, e); }
-    if (cv) card.appendChild(cv);
-    const meta = document.createElement('div');
-    meta.className = 'meta';
-    meta.innerHTML = `<div class="name">${m.name}</div><div class="tags"><span class="tag">${m.level}</span><span class="tag">${m.category}</span><span class="tag">#${m.id}</span></div>`;
-    card.appendChild(meta);
-    card.onclick = () => openModel(m);
-    frag.appendChild(card);
-  });
+  slice.forEach(m => { frag.appendChild(makeCard(m, false)); });
   grid.appendChild(frag);
   renderPager();
 }
@@ -164,21 +424,351 @@ function renderPager() {
   pager.appendChild(mk('Cuối »', n-1, page===n-1));
 }
 
+/* ================= CLASSROOM PANEL LOGIC ================= */
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function resetFold() {
+  folderCtx = null;
+  $('foldSlider').value = 0; $('foldVal').textContent = '0%';
+  if (viewer) { viewer.setGeometry(null); viewer.showModel(current); viewer.setOverlay(null); }
+}
+
 function openModel(m) {
   current = m;
   if (!viewer) viewer = Math3DCatalog.createViewer($('viewerBox'), { autoRotate: true });
+  folderCtx = null;
+  viewer.setOverlay(null);
   viewer.showModel(m);
   $('vTitle').textContent = m.name;
   $('vSub').textContent = `${m.nameEn} · #${m.id} · loại: ${m.kind}`;
   $('vDesc').style.display = 'block';
   $('vDesc').textContent = m.desc;
   $('actionRow').style.display = 'flex';
+  $('crTabs').style.display = 'flex';
   $('embedCode').style.display = 'none';
   $('jsonBox').style.display = 'none';
-  history.replaceState(null, '', '#' + m.id); // shareable direct-preview link
+  if (!curLesson && !curTheme) history.replaceState(null, '', '#' + m.id); // shareable direct-preview link (giữ #lesson/#theme khi đang trong bài học)
   $('btnRotate').textContent = viewer.autoRotate ? '⏸ Tạm dừng xoay' : '▶ Tự xoay';
+  $('btnFav').textContent = favs.has(m.id) ? '★' : '☆';
+  $('btnFav').classList.toggle('on', favs.has(m.id));
+  refreshDoneBtn();
+  $('foldSlider').value = 0; $('foldVal').textContent = '0%';
+  buildFormulaTab(m);
+  buildNetTab(m);
+  buildSliceTab(m);
+  buildQuizTab(m);
+  buildLessonTab(m);
+  buildLinkTab(m);
+  activateTab('tFormula');
   if (window.innerWidth < 980) $('viewerPanel').scrollIntoView({behavior:'smooth'});
 }
+
+function buildFormulaTab(m) {
+  let rows = [];
+  try { rows = Math3DClassroom.metrics(m) || []; } catch(e){}
+  $('metricsBox').innerHTML = rows.length
+    ? rows.map(r => `<div class="mrow"><span class="lab">${esc(r.label)}</span><span><span class="val">${esc(r.value)}${r.unit?' '+esc(r.unit):''}</span>${r.formula?`<span class="frm">${esc(r.formula)}</span>`:''}</span></div>`).join('')
+    : '<div class="netNote">Mô hình này minh hoạ khái niệm — không có đại lượng đo lường.</div>';
+  let parts = null;
+  try { parts = Math3DClassroom.parts(m); } catch(e){}
+  $('partsBox').innerHTML = (parts && parts.list) ?
+    parts.list.map(p => `<div class="pitem" style="border-left-color:${p.color||'#4a7fc1'}"><div class="pname">${esc(p.name)}</div><div class="pnote">${esc(p.note)}</div></div>`).join('') +
+    (parts.note ? `<div class="netNote">🧩 ${esc(parts.note)}</div>` : '') : '';
+}
+
+function buildNetTab(m) {
+  let n = null;
+  try { n = Math3DClassroom.net(m); } catch(e){}
+  const hasFolder = !!n;
+  $('netInfo').textContent = hasFolder ? n.title : 'Mô hình này (mặt cong/lưới phức tạp) chưa có khai triển giấy — hãy xem tab Mặt cắt hoặc Công thức.';
+  $('foldSlider').disabled = !hasFolder;
+  $('btnFoldAnim').style.display = hasFolder ? '' : 'none';
+  $('btnPrintNet').style.display = hasFolder ? '' : 'none';
+  const nc = $('netCanvas'), note = $('netNote');
+  if (hasFolder) {
+    drawNetTo(nc, n);
+    nc.style.display = 'block';
+    note.style.display = 'block';
+    note.innerHTML = `✂️ ${esc(n.note || '')}<br><small>In khai triển này ra giấy, cắt theo nét liền, gấp theo nét đứt — công thức diện tích xung quanh hiện ra ngay trước mắt!</small>`;
+  } else { nc.style.display = 'none'; note.style.display = 'none'; }
+}
+
+function drawNetTo(cv, n) {
+  const ctx = cv.getContext('2d');
+  ctx.clearRect(0,0,cv.width,cv.height);
+  let mnx=1e9,mxx=-1e9,mny=1e9,mxy=-1e9;
+  n.faces.forEach(f=>f.pts.forEach(p=>{mnx=Math.min(mnx,p[0]);mxx=Math.max(mxx,p[0]);mny=Math.min(mny,p[1]);mxy=Math.max(mxy,p[1]);}));
+  if (!isFinite(mnx)) return;
+  const pad=14, sx=(cv.width-2*pad)/Math.max(1e-6,(mxx-mnx)), sy=(cv.height-2*pad)/Math.max(1e-6,(mxy-mny));
+  const s=Math.min(sx,sy), ox=pad+(cv.width-2*pad-(mxx-mnx)*s)/2, oy=pad+(cv.height-2*pad-(mxy-mny)*s)/2;
+  const P=p=>[ox+(p[0]-mnx)*s, cv.height-oy-(p[1]-mny)*s];
+  n.faces.forEach(f=>{
+    ctx.beginPath();
+    f.pts.forEach((p,i)=>{const q=P(p); i?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]);});
+    ctx.closePath();
+    ctx.fillStyle = f.kind==='base' ? '#cfe0f5' : '#f7e3c4';
+    ctx.strokeStyle='#33507a'; ctx.lineWidth=1.4;
+    ctx.fill(); ctx.stroke();
+    if (f.label) {
+      const cx=f.pts.reduce((a,p)=>a+p[0],0)/f.pts.length, cy=f.pts.reduce((a,p)=>a+p[1],0)/f.pts.length;
+      const q=P([cx,cy]);
+      ctx.fillStyle='#3a4a63'; ctx.font='10px sans-serif'; ctx.textAlign='center';
+      ctx.fillText(f.label, q[0], q[1]);
+    }
+  });
+  ctx.setLineDash([5,4]); ctx.strokeStyle='#b0413e'; ctx.lineWidth=1.2;
+  (n.folds||[]).forEach(fl=>{const a=P(fl[0]),b=P(fl[1]);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();});
+  ctx.setLineDash([]);
+}
+
+/* fold/unfold slider + animation */
+$('foldSlider').addEventListener('input', () => {
+  if (!current) return;
+  const t = $('foldSlider').value/100;
+  $('foldVal').textContent = Math.round(t*100)+'%';
+  applyFold(t);
+});
+function applyFold(t) {
+  if (!viewer || !current) return;
+  if (t <= 0.001) { folderCtx = null; viewer.showModel(current); return; }
+  if (!folderCtx || folderCtx.model !== current) {
+    const f = Math3DClassroom.folder(current);
+    if (!f) { $('foldSlider').value = 0; return; }
+    folderCtx = { model: current, folder: f };
+  }
+  viewer.setGeometry(folderCtx.folder.build(t));
+}
+let foldAnimId = null;
+$('btnFoldAnim').onclick = () => {
+  if (foldAnimId) { cancelAnimationFrame(foldAnimId); foldAnimId = null; $('btnFoldAnim').textContent='▶ Xem gấp hình'; return; }
+  $('btnFoldAnim').textContent = '⏹ Dừng';
+  const t0 = performance.now(), dur = 2600;
+  const step = now => {
+    const p = Math.min(1, (now - t0) / dur);
+    const tri = p < 0.5 ? p*2 : (1-p)*2;   // unfold then fold back
+    $('foldSlider').value = Math.round(tri*100);
+    $('foldVal').textContent = Math.round(tri*100)+'%';
+    applyFold(tri);
+    if (p < 1) foldAnimId = requestAnimationFrame(step);
+    else { foldAnimId = null; $('btnFoldAnim').textContent='▶ Xem gấp hình'; }
+  };
+  foldAnimId = requestAnimationFrame(step);
+};
+
+/* cross-section tab */
+let secMode = 'horizontal';
+function buildSliceTab(m) { updateSection(); }
+document.querySelectorAll('#secModes button').forEach(b => b.onclick = () => {
+  secMode = b.dataset.m;
+  document.querySelectorAll('#secModes button').forEach(x=>x.classList.toggle('on', x===b));
+  updateSection();
+});
+$('secSlider').addEventListener('input', updateSection);
+function updateSection() {
+  if (!current || !viewer) return;
+  const k = $('secSlider').value/100;
+  $('secVal').textContent = k.toFixed(2);
+  let ov = null;
+  try { ov = Math3DClassroom.sectionOverlay(current, secMode, k); } catch(e){}
+  viewer.setOverlay(ov);
+  if (ov && ov.info) {
+    $('secShape').textContent = `Thiết diện: ${ov.info.shape}${ov.info.area!=='—' ? ' · S = '+ov.info.area : ''}`;
+    $('secLesson').innerHTML = `<b>Vị trí:</b> ${esc(ov.info.offset)}<br>${esc(ov.info.lesson||'')}`;
+  } else {
+    $('secShape').textContent = 'Mặt phẳng không cắt khối tại vị trí này';
+    $('secLesson').textContent = 'Thử kéo thanh trượt hoặc đổi hướng cắt.';
+  }
+}
+
+/* quiz tab */
+let quizData = [], quizScore = {ok:0,bad:0};
+function buildQuizTab(m) {
+  quizScore = {ok:0,bad:0};
+  regenerateQuiz();
+}
+function regenerateQuiz() {
+  if (!current) return;
+  try { quizData = Math3DClassroom.quiz(current, 4); } catch(e){ quizData = []; }
+  $('quizScore').textContent = '';
+  const box = $('quizBox');
+  if (!quizData.length) { box.innerHTML = '<div class="netNote">Chưa có ngân hàng câu hỏi cho mô hình này.</div>'; return; }
+  box.innerHTML = quizData.map((q,qi)=>`
+    <div class="quizQ" data-q="${qi}">
+      <div class="qtext">Câu ${qi+1}. ${esc(q.q)}</div>
+      ${q.options.map((o,oi)=>`<button class="opt" data-o="${oi}">${esc(o)}</button>`).join('')}
+      <div class="explain">💡 ${esc(q.explain||'')}</div>
+    </div>`).join('');
+  box.querySelectorAll('.quizQ').forEach(el => {
+    el.querySelectorAll('.opt').forEach(btn => btn.onclick = () => {
+      const qi = +el.dataset.q, oi = +btn.dataset.o, q = quizData[qi];
+      if (el.dataset.done) return;
+      el.dataset.done = 1;
+      if (oi === q.answer) { btn.classList.add('correct'); quizScore.ok++; }
+      else { btn.classList.add('wrong'); el.querySelectorAll('.opt')[q.answer].classList.add('correct'); quizScore.bad++; }
+      el.querySelector('.explain').style.display = 'block';
+      $('quizScore').textContent = `Đúng ${quizScore.ok} · Sai ${quizScore.bad}`;
+    });
+  });
+}
+$('btnNewQuiz').onclick = regenerateQuiz;
+
+/* lesson tab */
+function buildLessonTab(m) {
+  let L = null, steps = [];
+  try { L = Math3DCurriculum ? mergeLessonPlan(m) : null; } catch(e) { L = null; }
+  if (!L) { try { L = Math3DClassroom.lessonPlan(m); } catch(e){} }
+  try { steps = Math3DClassroom.teachSteps(m) || []; } catch(e){}
+  if (!L) { $('lessonBox').innerHTML = '<div class="netNote">Chưa có giáo án tự động cho mô hình này.</div>'; return; }
+  $('lessonBox').innerHTML = `
+    ${L.fromCurriculum ? `<h4>Thuộc bài học trong chương trình</h4><ul>${(L._lessons||[]).map(c=>{const l=Math3DCurriculum.getLesson(c);return l?`<li><a href="#lesson=${c}" class="goLs" data-c="${c}" style="color:#7cc4ff;cursor:pointer">${esc(l.title)}</a></li>`:''}).join('')}</ul>`:''}
+    <h4>Mục tiêu bài học</h4><ul>${(L.objectives||[]).map(o=>`<li>${esc(o)}</li>`).join('')}</ul>
+    <h4>Chuẩn bị</h4><ul>${(L.materials||[]).map(o=>`<li>${esc(o)}</li>`).join('')}</ul>
+    <h4>Tiến trình (${esc(L.duration||'45 phút')})</h4><ol>${(L.activities||[]).map(a=>`<li>${esc(typeof a==='string'?a:`(${a.time}) ${a.what}`)}</li>`).join('')}</ol>
+    <h4>Khai thác mô hình từng bước</h4>${steps.map(s=>`<div class="pitem"><div class="pname">${esc(s.title)}</div><div class="pnote">${esc(s.body)}</div></div>`).join('')}`;
+  $('lessonBox').querySelectorAll('.goLs').forEach(a=>a.onclick=()=>selectLesson(a.dataset.c));
+}
+
+/* gộp mục tiêu/giáo án chương trình vào lessonPlan của model */
+function mergeLessonPlan(m) {
+  const mm = Math3DCurriculum.matchModel(m);
+  if (!mm.lessons.length) return null;
+  const ls = Math3DCurriculum.getLesson(mm.lessons[0]);
+  const base = Math3DClassroom.lessonPlan(m);
+  return Object.assign({}, base, {
+    fromCurriculum: true, _lessons: mm.lessons,
+    objectives: [...new Set([...(ls.objectives||[]), ...(base.objectives||[])])].slice(0,6),
+    activities: [...(base.activities||[])],
+    homework: (base.homework||'') + (ls.homework ? ' · ' + ls.homework : '')
+  });
+}
+
+/* ---- curriculum tab (📚 Bài học) ---- */
+let linkLessonCode = null;
+function buildLinkTab(m) {
+  const box = $('linkBox');
+  if (!Math3DCurriculum.data) { box.innerHTML = '<div class="netNote">Chưa nạp curriculum.json — mở app qua HTTP server để có dữ liệu bài học.</div>'; linkLessonCode=null; return; }
+  const mm = Math3DCurriculum.matchModel(m);
+  linkLessonCode = mm.lessons[0] || null;
+  if (!mm.lessons.length) {
+    box.innerHTML = `<div class="netNote">Mô hình #${m.id} nằm ngoài ${Math3DCurriculum.lessons.length} bài học chuẩn — vẫn dùng được khi tự xây bài học riêng (xem <code>Math3DCurriculum.exportJSON()</code>).</div>`;
+    return;
+  }
+  box.innerHTML = mm.lessons.map(c => {
+    const l = Math3DCurriculum.getLesson(c); if (!l) return '';
+    const th = Math3DCurriculum.themes.find(t=>t.lessons.includes(c));
+    return `<div class="pitem" style="border-left-color:#b08a3e">
+      <div class="pname">🎯 ${esc(l.title)}</div>
+      <div class="pnote">${th?'<span class="tag">📚 '+esc(th.name)+'</span> ':''}<span class="tag">${Math3DCurriculum.bandName(l.band)} · Lớp ${l.grade}</span> · ${l.modelIds.length} mô hình</div>
+      <div class="pnote" style="margin-top:6px"><b>Mục tiêu:</b> ${esc((l.objectives||[])[0]||'')}</div>
+    </div>`;
+  }).join('') + `<div class="netNote">💡 Trong bài học, dùng nút <b>✓ Đã học</b> dưới viewer để ghi tiến độ. Liên kết chia sẻ: <code>#lesson=${linkLessonCode}</code></div>`;
+}
+$('btnGoLesson').onclick = () => { if (linkLessonCode) selectLesson(linkLessonCode); };
+
+/* ---- đánh dấu đã học ---- */
+function refreshDoneBtn() {
+  const b = $('btnDone'); if (!current) return;
+  const done = Math3DCurriculum.progress.isDone(current.id);
+  b.textContent = done ? '✔ Đã học' : '✓ Đã học';
+  b.classList.toggle('doneBtn', done);
+}
+$('btnDone').onclick = () => {
+  if (!current) return;
+  Math3DCurriculum.progress.toggle(current.id);
+  refreshDoneBtn(); updateProgressUI();
+  // cập nhật trực quan trên các thẻ đang hiển thị (so khớp bằng #id trong tags)
+  [ ...document.querySelectorAll('#lpModels .card, #grid .card') ].forEach(c => {
+    if (c.title === current.desc && c.querySelector('.name') && c.querySelector('.name').textContent === current.name)
+      c.classList.toggle('lessonDone', Math3DCurriculum.progress.isDone(current.id));
+  });
+};
+
+/* ---- export bài học: worksheet / HTML tự chứa / JSON ---- */
+function dl(name, text, mime) {
+  const a = document.createElement('a');
+  a.download = name;
+  a.href = URL.createObjectURL(new Blob([text], { type: mime || 'text/plain' }));
+  a.click();
+}
+$('btnLessonWorksheet').onclick = () => {
+  if (!curLesson) return;
+  const ms = Math3DCurriculum.lessonModels(curLesson, 12);
+  try {
+    const html = Math3DClassroom.worksheetHTML(ms, `Phiếu học tập — ${Math3DCurriculum.getLesson(curLesson).title}`);
+    const w = window.open('', '_blank'); w.document.write(html); w.document.close();
+    setTimeout(()=>{ try{w.print();}catch(e){} }, 600);
+  } catch(e) { alert('Không in được: ' + e.message); }
+};
+$('btnLessonExport').onclick = () => {
+  if (!curLesson) return;
+  try { dl(`bai-hoc-${curLesson}.html`, Math3DCurriculum.lessonHTML(curLesson, { baseHref: location.href.split('#')[0].split('?')[0] }), 'text/html'); }
+  catch(e) { alert('Không xuất được: ' + e.message); }
+};
+$('btnLessonJSON').onclick = () => {
+  try { dl('curriculum-export.json', JSON.stringify(Math3DCurriculum.exportJSON(), null, 1), 'application/json'); }
+  catch(e) { alert('Không xuất được: ' + e.message); }
+};
+
+/* printing */
+$('btnPrintNet').onclick = () => {
+  if (!current) return;
+  let n=null; try{n=Math3DClassroom.net(current);}catch(e){}
+  if(!n) return;
+  const w = window.open('', '_blank');
+  w.document.write(`<html><head><title>In khai triển — ${esc(n.title)}</title><style>body{font-family:sans-serif;text-align:center}canvas{max-width:100%}h2{color:#33507a}p{color:#666;font-size:13px}</style></head><body>
+    <h2>${esc(n.title)}</h2><p>Cắt theo nét liền · Gấp theo nét đứt · Dán các mép để tạo khối</p>
+    <img src="${$('netCanvas').toDataURL()}" onload="window.print()">
+    <p>${esc(n.note||'')}</p></body></html>`);
+  w.document.close();
+};
+$('btnPrintLesson').onclick = () => {
+  if (!current) return;
+  try {
+    const html = Math3DClassroom.worksheetHTML([current], `Phiếu học tập — ${current.name}`);
+    const w = window.open('', '_blank');
+    w.document.write(html); w.document.close();
+    setTimeout(()=>{ try{w.print();}catch(e){} }, 600);
+  } catch(e) { alert('Không in được: ' + e.message); }
+};
+$('btnPrintSel').onclick = () => {
+  const list = filtered.slice(page*PAGE, page*PAGE + PAGE).slice(0, 12);
+  if (!list.length) return;
+  const html = Math3DClassroom.worksheetHTML(list, `Phiếu bài tập — ${list.length} mô hình (trang ${page+1})`);
+  const w = window.open('', '_blank');
+  w.document.write(html); w.document.close();
+  setTimeout(()=>{ try{w.print();}catch(e){} }, 600);
+};
+
+/* favourites */
+$('btnFav').onclick = () => {
+  if (!current) return;
+  if (favs.has(current.id)) favs.delete(current.id); else favs.add(current.id);
+  saveFavs();
+  $('btnFav').textContent = favs.has(current.id) ? '★' : '☆';
+  $('btnFav').classList.toggle('on', favs.has(current.id));
+};
+$('favChip').onclick = () => { favOnly = !favOnly; $('favChip').style.outline = favOnly ? '2px solid #ffd75e' : 'none'; applyFilter(); };
+
+/* tabs */
+const TABS = ['tFormula','tNet','tSlice','tQuiz','tLesson','tLink'];
+function activateTab(id) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on', t.dataset.t===id));
+  document.querySelectorAll('.tabBody').forEach(b=>b.classList.toggle('on', b.id===id));
+  if (id !== 'tSlice' && viewer) viewer.setOverlay(null);
+  else if (id === 'tSlice') updateSection();
+}
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => activateTab(t.dataset.t));
+
+/* keyboard shortcuts for classroom */
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (!current) return;
+  if (e.key === 'ArrowLeft')  { page = Math.max(0, page-1); renderPage(); }
+  if (e.key === 'ArrowRight') { page = Math.min(Math.ceil(filtered.length/PAGE)-1, page+1); renderPage(); }
+  if (e.key === 'f' || e.key === 'F') $('btnFav').click();
+  if (e.key === 'd' || e.key === 'D') $('btnDone').click();
+  if (e.key >= '1' && e.key <= '6') activateTab(TABS[+e.key-1]);
+});
 
 $('btnRotate').onclick = () => { if(!viewer)return; viewer.autoRotate=!viewer.autoRotate; $('btnRotate').textContent = viewer.autoRotate?'⏸ Tạm dừng xoay':'▶ Tự xoay'; };
 $('btnPNG').onclick = () => {
@@ -189,11 +779,21 @@ $('btnPNG').onclick = () => {
   a.href = cv.toDataURL('image/png');
   a.click();
 };
+$('btnOBJ').onclick = () => {
+  if (!current) return;
+  let txt=''; try { txt = Math3DClassroom.exportOBJ(current); } catch(e){ alert('Không xuất được: '+e.message); return; }
+  const blob = new Blob([txt], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.download = `math3d-${current.id}.obj`;
+  a.href = URL.createObjectURL(blob);
+  a.click();
+};
 $('btnJSON').onclick = () => {
   const box = $('jsonBox');
   box.style.display = box.style.display==='block'?'none':'block';
   box.textContent = JSON.stringify(current, null, 2);
 };
+
 $('btnEmbed').onclick = () => {
   const pre = $('embedCode');
   pre.style.display = pre.style.display==='block'?'none':'block';
@@ -208,6 +808,8 @@ $('btnEmbed').onclick = () => {
       document.getElementById('my3d'), { model });
     // API: viewer.showModel(model) · Math3DCatalog.buildPreviewCanvas(model, px)
     //      Math3DCatalog.search('cube') · Math3DCatalog.buildGeometry(model)
+    //      viewer.setOverlay(Math3DClassroom.sectionOverlay(model,'horizontal',0.3))
+    //      viewer.setGeometry(Math3DClassroom.folder(model).build(0.5)) // 0→khối · 1→khai triển
   });
 <\/script>`;
 };

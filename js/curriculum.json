@@ -1,0 +1,762 @@
+{
+ "version": 1,
+ "updated": "2026-10-27",
+ "source": "Chương trình GDPT 2018 (các mạch hình học/số học/thống kê)",
+ "themes": [
+  {
+   "code": "T1",
+   "name": "Hình học trực quan nền tảng",
+   "desc": "Từ hình phẳng tới khối 3D đầu tiên — mạch Tiểu học lớp 1-5.",
+   "lessons": [
+    "TH-L1",
+    "TH-L2",
+    "TH-L3A",
+    "TH-L3B",
+    "TH-L4A",
+    "TH-L5B",
+    "TH-L5C",
+    "TH-L5D"
+   ]
+  },
+  {
+   "code": "T2",
+   "name": "Số học & Phân số",
+   "desc": "Hệ đếm, phân số, tỉ lệ — dùng mô hình số học 3D.",
+   "lessons": [
+    "TH-L4B",
+    "TH-L5A",
+    "TC-6B",
+    "TC-8A"
+   ]
+  },
+  {
+   "code": "T3",
+   "name": "Đa giác & Tứ giác",
+   "desc": "Tam giác, tứ giác, góc, đối xứng.",
+   "lessons": [
+    "TH-L4A",
+    "TC-6A",
+    "TC-6B",
+    "TC-6C",
+    "TC-7A"
+   ]
+  },
+  {
+   "code": "T4",
+   "name": "Khối đa diện",
+   "desc": "Lăng trụ, chóp, khối đều — mạch chính Hình học 8 & 12.",
+   "lessons": [
+    "TC-8B",
+    "TH-12A",
+    "TH-L5D"
+   ]
+  },
+  {
+   "code": "T5",
+   "name": "Mặt tròn xoay",
+   "desc": "Tròn, trụ, nón, cầu, xuyến — Toán 9 & 12.",
+   "lessons": [
+    "TH-L5C",
+    "TC-9A",
+    "TC-9B",
+    "TH-12B"
+   ]
+  },
+  {
+   "code": "T6",
+   "name": "Hàm số & Đồ thị",
+   "desc": "Đồ thị 2D/3D, biến đổi, lượng giác.",
+   "lessons": [
+    "TH-11A",
+    "TH-11B",
+    "TH-KN"
+   ]
+  },
+  {
+   "code": "T7",
+   "name": "Vectơ & Không gian toạ độ",
+   "desc": "Vectơ, Oxyz, mặt bậc hai.",
+   "lessons": [
+    "TH-10A",
+    "TH-12C"
+   ]
+  },
+  {
+   "code": "T8",
+   "name": "Thống kê & Xác suất",
+   "desc": "Biểu đồ, số đặc trưng, biến cố.",
+   "lessons": [
+    "TH-10B",
+    "TC-7B"
+   ]
+  },
+  {
+   "code": "T9",
+   "name": "Fractal & Toán nâng cao",
+   "desc": "Tự đồng dạng, chiều fractal, chủ đề câu lạc bộ.",
+   "lessons": [
+    "TH-KN"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "TH-L1",
+   "title": "Hình vuông, hình chữ nhật, tam giác, khối lập phương (Lớp 1)",
+   "block": "HÌNH VUÔNG, HÌNH CHỮ NHẬT; HÌNH TAM GIÁC; HÌNH TRÒN. KHỐI LẬP PHƯƠNG, KHỐI HỘP CHỮ NHẬT",
+   "grade": 1,
+   "modelKinds": [
+    "rect",
+    "platonic",
+    "polygon"
+   ],
+   "objectives": [
+    "Nhận biết hình vuông, hình chữ nhật, hình tam giác, hình tròn và khối lập phương, khối hộp.",
+    "Đếm được số cạnh, số đỉnh của khối lập phương/khối hộp trên mô hình 3D.",
+    "Chỉ ra được đồ vật thật có dạng các hình đã học."
+   ],
+   "activities": [
+    "Quan sát khối lập phương 3D, xoay mô hình và đếm mặt/cạnh/đỉnh.",
+    "So sánh khối lập phương với khối hộp chữ nhật bằng cách chuyển mô hình.",
+    "Trò chơi 'tìm hình trong lớp học' gắn với từng mô hình."
+   ],
+   "homework": "Tìm 5 đồ vật quanh nhà có dạng khối lập phương hoặc khối hộp chữ nhật.",
+   "note": "Mô hình 3D giúp học sinh lớp 1 nhìn khối từ mọi phía — điều tranh vẽ không làm được."
+  },
+  {
+   "code": "TH-L2",
+   "title": "Hình tứ giác, hình có ô vuông (Lớp 2)",
+   "block": "HÌNH TỨ GIÁC. HÌNH GỒM NHIỀU Ô VUÔNG",
+   "grade": 2,
+   "modelKinds": [
+    "quad",
+    "polygon"
+   ],
+   "objectives": [
+    "Nhận biết hình tứ giác, đếm 4 cạnh 4 đỉnh.",
+    "Biết ghép/tách hình thành các ô vuông."
+   ],
+   "activities": [
+    "Xoay các tứ giác 3D, phân biệt 'phẳng' và 'không phẳng' (tứ giác không đều).",
+    "Đếm ô vuông trên mô hình lưới."
+   ],
+   "homework": "Vẽ 3 hình tứ giác khác nhau vào vở.",
+   "note": ""
+  },
+  {
+   "code": "TH-L3A",
+   "title": "Chu vi hình tam giác, tứ giác, chữ nhật (Lớp 3)",
+   "block": "CHU VI HÌNH TAM GIÁC, HÌNH TỨ GIÁC, HÌNH CHỮ NHẬT",
+   "grade": 3,
+   "modelKinds": [
+    "triangle",
+    "quad",
+    "rect"
+   ],
+   "objectives": [
+    "Tính chu vi bằng cách cộng độ dài các cạnh.",
+    "Kiểm chứng kết quả bằng số đo hiển thị trên mô hình."
+   ],
+   "activities": [
+    "Chọn tam giác 3D, đọc số đo cạnh ở tab Công thức, tính nhẩm chu vi rồi đối chiếu.",
+    "So sánh chu vi hai hình có cùng diện tích."
+   ],
+   "homework": "Tính chu vi 3 đồ vật hình chữ nhật trong nhà (mặt bàn, sách, hộp).",
+   "note": ""
+  },
+  {
+   "code": "TH-L3B",
+   "title": "Diện tích hình vuông, hình chữ nhật (Lớp 3)",
+   "block": "DIỆN TÍCH HÌNH VUÔNG, DIỆN TÍCH HÌNH CHỮ NHẬT",
+   "grade": 3,
+   "modelKinds": [
+    "rect",
+    "numsys"
+   ],
+   "objectives": [
+    "Hiểu diện tích là 'số ô vuông phủ kín hình'.",
+    "Rút ra công thức S = a·b, S = a²."
+   ],
+   "activities": [
+    "Đếm ô vuông trên mô hình lưới đơn vị, so với công thức ở tab Công thức.",
+    "Dự đoán diện tích trước khi quay mô hình để kiểm tra."
+   ],
+   "homework": "Đo và tính diện tích mặt chiếc hộp bất kì ở nhà.",
+   "note": ""
+  },
+  {
+   "code": "TH-L4A",
+   "title": "Góc nhọn, góc tù, góc vuông; hai đường thẳng vuông góc/song song (Lớp 4)",
+   "block": "GÓC NHỌN, GÓC TÙ, GÓC VUÔNG. HAI ĐƯỜNG THẲNG VUÔNG GÓC. HAI ĐƯỜNG THẲNG SONG SONG",
+   "grade": 4,
+   "modelKinds": [
+    "geoextra",
+    "transform"
+   ],
+   "objectives": [
+    "Phân biệt góc nhọn/vuông/tù/bẹt.",
+    "Nhận ra quan hệ vuông góc, song song trên cạnh của khối 3D."
+   ],
+   "activities": [
+    "Tìm các cặp cạnh vuông góc và song song trên khối hộp 3D (xoay để thấy cả 3 chiều).",
+    "Ước lượng số đo góc rồi kiểm tra bằng mô hình góc."
+   ],
+   "homework": "Liệt kê 3 cặp cạnh song song trong phòng học.",
+   "note": ""
+  },
+  {
+   "code": "TH-L4B",
+   "title": "Phân số và phép cộng/trừ phân số (Lớp 4)",
+   "block": "PHÂN SỐ. PHÉP CỘNG PHÂN SỐ. PHÉP TRỪ PHÂN SỐ",
+   "grade": 4,
+   "modelKinds": [
+    "fractionpie"
+   ],
+   "objectives": [
+    "Đọc – viết phân số từ hình trực quan.",
+    "Cộng trừ cùng mẫu số nhờ mô hình tròn/phân chia."
+   ],
+   "activities": [
+    "Xem mô hình fractionpie, diễn đạt phần tô màu bằng phân số.",
+    "Ghép hai mô hình để thấy 1/2 + 1/4 = 3/4 một cách trực quan."
+   ],
+   "homework": "Viết phân số chỉ phần đã tô màu của 3 đồ vật em cắt đôi/tư.",
+   "note": ""
+  },
+  {
+   "code": "TH-L5A",
+   "title": "Nhân/chia phân số; hỗn số (Lớp 5)",
+   "block": "NHÂN PHÂN SỐ. CHIA PHÂN SỐ. HỖN SỐ",
+   "grade": 5,
+   "modelKinds": [
+    "fractionpie",
+    "numsys"
+   ],
+   "objectives": [
+    "Minh hoạ phép nhân phân số bằng 'diện tích phần giao'.",
+    "Chuyển hỗn số ↔ phân số."
+   ],
+   "activities": [
+    "Dùng 2 mô hình fractionpie chồng lớp để giải thích 1/2 × 1/3 = 1/6.",
+    "Đọc tỉ lệ trên mô hình kim tự tháp/ cột phân số."
+   ],
+   "homework": "Giải thích cho bố mẹ phép nhân phân số bằng một mô hình 3D.",
+   "note": ""
+  },
+  {
+   "code": "TH-L5B",
+   "title": "Hình tam giác, hình thang; diện tích hình tam giác, hình thang (Lớp 5)",
+   "block": "HÌNH TAM GIÁC, HÌNH THANG. DIỆN TÍCH HÌNH TAM GIÁC. DIỆN TÍCH HÌNH THANG",
+   "grade": 5,
+   "modelKinds": [
+    "triangle",
+    "quad"
+   ],
+   "objectives": [
+    "Phát biểu đáy – chiều cao của tam giác, hình thang.",
+    "Suy ra công thức S từ việc 'ghép hình'."
+   ],
+   "activities": [
+    "Xoay tam giác 3D để chỉ ra chiều cao rơi ngoài/trong hình.",
+    "Đối chiếu S tính tay với S ở tab Công thức."
+   ],
+   "homework": "Tính diện tích một mảnh đất hình thang (số liệu tự đặt).",
+   "note": ""
+  },
+  {
+   "code": "TH-L5C",
+   "title": "Hình tròn, chu vi & diện tích hình tròn (Lớp 5)",
+   "block": "HÌNH TRÒN. CHU VI HÌNH TRÒN, DIỆN TÍCH HÌNH TRÒN",
+   "grade": 5,
+   "modelKinds": [
+    "polygon",
+    "revolution"
+   ],
+   "objectives": [
+    "Hiểu π ≈ 3,14 qua đa giác nội tiếp ngoại tiếp.",
+    "Tính C = 2πr, S = πr²."
+   ],
+   "activities": [
+    "Tăng dần số cạnh đa giác nội tiếp để thấy nó 'hoá' thành hình tròn.",
+    "Đo chu vi bánh xe thật rồi đối chiếu mô hình."
+   ],
+   "homework": "Tính diện tích mặt đồng hồ tròn ở nhà (đo bán kính).",
+   "note": ""
+  },
+  {
+   "code": "TH-L5D",
+   "title": "Thể tích hình lập phương, hình hộp chữ nhật (Lớp 5)",
+   "block": "XĂNG-TI-MÉT KHỐI. ĐỀ-XI-MÉT KHỐI. ME-T KHỐI. THỂ TÍCH HÌNH LẬP PHƯƠNG, HÌNH HỘP CHỮ NHẬT",
+   "grade": 5,
+   "modelKinds": [
+    "platonic",
+    "prism",
+    "numsys"
+   ],
+   "objectives": [
+    "Hình dung 1 cm³ là một ô lập phương đơn vị.",
+    "Tính V = a³ và V = a·b·c, đếm ô đơn vị."
+   ],
+   "activities": [
+    "Xem khối lập phương xếp bởi ô đơn vị, đếm theo hàng–cột–lớp.",
+    "So sánh thể tích hai hộp có cùng chu vi đáy."
+   ],
+   "homework": "Ước lượng số hộp sữa 200ml vừa đầy một thùng 20×20×20 cm.",
+   "note": ""
+  },
+  {
+   "code": "TC-6A",
+   "title": "Hình tam giác đều, hình vuông, lục giác đều (Toán 6 CTST/KNTT)",
+   "block": "HÌNH TAM GIÁC ĐỀU, HÌNH VUÔNG, HÌNH LỤC GIÁC ĐỀU",
+   "grade": 6,
+   "modelKinds": [
+    "polygon",
+    "platonic"
+   ],
+   "objectives": [
+    "Nhận biết đặc trưng cạnh/góc của tam giác đều, vuông, lục giác đều.",
+    "Xếp được khai triển giấy của khối liên quan."
+   ],
+   "activities": [
+    "In khai triển từ tab Gấp/Mở, cắt và gấp thành khối thật.",
+    "Đếm trục đối xứng bằng cách xoay mô hình."
+   ],
+   "homework": "Chụp ảnh sản phẩm giấy gấp được và đối chiếu với mô hình 3D.",
+   "note": ""
+  },
+  {
+   "code": "TC-6B",
+   "title": "Hình chữ nhật, thoi, bình hành, thang cân (Toán 6)",
+   "block": "HÌNH CHỮ NHẬT, HÌNH THOI, HÌNH BÌNH HÀNH, HÌNH THANG CÂN",
+   "grade": 6,
+   "modelKinds": [
+    "quad",
+    "rect"
+   ],
+   "objectives": [
+    "Phân biệt tứ giác đặc biệt theo cạnh song song và cạnh bên.",
+    "Dự đoán thiết diện của khối hộp."
+   ],
+   "activities": [
+    "Xoay khối hộp, kéo thanh trượt Mặt cắt để thấy thiết diện là thoi/hình thang cân.",
+    "Đo đường chéo thoi trên mô hình."
+   ],
+   "homework": "Vẽ 4 tứ giác đã học vào vở, ghi đặc điểm mỗi hình.",
+   "note": ""
+  },
+  {
+   "code": "TC-6C",
+   "title": "Góc; số đo góc (Toán 6)",
+   "block": "GÓC. SỐ ĐO GÓC",
+   "grade": 6,
+   "modelKinds": [
+    "geoextra"
+   ],
+   "objectives": [
+    "Đọc số đo góc nhọn/vuông/tù/bẹt.",
+    "Dùng mô hình góc để ước lượng rồi kiểm chứng."
+   ],
+   "activities": [
+    "So sánh 2 góc bằng cách xoay mô hình về cùng hướng.",
+    "Tìm góc trong bảng đồng hồ 3D."
+   ],
+   "homework": "Đo góc mở của cánh cửa bằng ê-ke rồi so với ước lượng.",
+   "note": ""
+  },
+  {
+   "code": "TC-7A",
+   "title": "Tam giác; tổng ba góc; các trường hợp bằng nhau (Toán 7)",
+   "block": "ĐỊNH LÝ PYTHAGORE. CÁC TRƯỜNG HỢP BẰNG NHAU CỦA TAM GIÁC",
+   "grade": 7,
+   "modelKinds": [
+    "triangle",
+    "geoextra"
+   ],
+   "objectives": [
+    "Chứng minh tổng ba góc = 180° bằng cách 'trải' ba góc ra đường thẳng.",
+    "Phát biểu 3 trường hợp bằng nhau của tam giác.",
+    "Kiểm nghiệm định lý Pythagore."
+   ],
+   "activities": [
+    "Xoay tam giác 3D, quan sát 3 góc ghép thành góc bẹt.",
+    "Dựng tam giác từ 3 dữ kiện (c-c-c, c-g-c, g-c-g) trên mô hình.",
+    "Xem mô hình Vuông-A+B-C chứng minh Pythagore bằng diện tích."
+   ],
+   "homework": "Cho tam giác có 2 cạnh 6, 8 và góc vuông xen giữa — tính cạnh huyền rồi kiểm tra bằng tab Công thức.",
+   "note": ""
+  },
+  {
+   "code": "TC-7B",
+   "title": "Tỉ lệ thức; dãy số bằng nhau (Liên hệ chủ đề Số học)",
+   "block": "TỈ LỆ THỨC. TÍNH CHẤT CỦA DÃY SỐ BẰNG NHAU",
+   "grade": 7,
+   "modelKinds": [
+    "numsys",
+    "stats"
+   ],
+   "objectives": [
+    "Viết tỉ lệ thức từ số liệu trên mô hình cột/bar.",
+    "Rút gọn và kiểm tra a/b = c/d."
+   ],
+   "activities": [
+    "Đọc chiều cao 2 cột trên mô hình thống kê, lập tỉ số.",
+    "Đối chiếu phần trăm trên mô hình pie."
+   ],
+   "homework": "",
+   "note": ""
+  },
+  {
+   "code": "TC-8A",
+   "title": "Đa thức; hằng đẳng thức bằng mô hình khối (Toán 8)",
+   "block": "ĐA THỨC. HẰNG ĐẲNG THỨC ĐÁNG NHỚ",
+   "grade": 8,
+   "modelKinds": [
+    "numsys",
+    "rect",
+    "prism"
+   ],
+   "objectives": [
+    "Nhìn (a+b)² = a²+2ab+b² trên mô hình ô vuông.",
+    "Tổng quát hoá bằng lập luận diện tích/tích khối."
+   ],
+   "activities": [
+    "Tách mô hình ô vuông (a+b)×(a+b) thành 4 vùng.",
+    "Ghép khối hộp minh hoạ (a+b)³ nếu có mô hình lập phương đơn vị."
+   ],
+   "homework": "Dùng mô hình để giải thích (a−b)² cho bạn cùng bàn.",
+   "note": ""
+  },
+  {
+   "code": "TC-8B",
+   "title": "Hình chóp tam giác đều, tứ giác đều (Toán 8 KNTT)",
+   "block": "HÌNH CHÓP TAM GIÁC ĐỀU. HÌNH CHÓP TỨ GIÁC ĐỀU",
+   "grade": 8,
+   "modelKinds": [
+    "pyramid",
+    "net"
+   ],
+   "objectives": [
+    "Định nghĩa đáy, mặt bên, trung đoạn, chiều cao.",
+    "Tính Sxq = p·d và thể tích V = ⅓·S·h.",
+    "In – gấp khai triển hình chóp."
+   ],
+   "activities": [
+    "Tab Gấp/Mở: xem khai triển, in ra giấy, gấp thành kim tự tháp.",
+    "Tab Mặt cắt: cắt ngang → tam giác/ngũ giác đồng dạng đáy; cắt dọc → tam giác cân.",
+    "Tab Công thức: đọc Sxq, V rồi tự tính lại với số đo riêng."
+   ],
+   "homework": "Tính thể tích mô hình kim tự tháp giấy em gấp (đo cạnh thực tế).",
+   "note": "Kim tự tháp Ai Cập, mái che — dẫn dắt ứng dụng thực tế."
+  },
+  {
+   "code": "TC-9A",
+   "title": "Hình trụ (Toán 9)",
+   "block": "HÌNH TRỤ. DIỆN TÍCH XUNG QUANH VÀ THỂ TÍCH HÌNH TRỤ",
+   "grade": 9,
+   "modelKinds": [
+    "cylinder",
+    "revolution"
+   ],
+   "objectives": [
+    "Nhận biết đáy, trục, đường sinh.",
+    "Tính Sxq = 2πrh, V = πr²h.",
+    "Mô tả khai triển: hình chữ nhật + 2 hình tròn."
+   ],
+   "activities": [
+    "Quay nhanh mô hình trụ → tưởng tượng quá trình tạo thành bằng cách quay hình chữ nhật.",
+    "In khai triển, cuộn giấy thành trụ, đo để kiểm chứng 2πr.",
+    "Kéo Mặt cắt: ngang → hình tròn, dọc → hình chữ nhật."
+   ],
+   "homework": "Tính thể tích một lon sữa bò (đo r, h thực tế).",
+   "note": ""
+  },
+  {
+   "code": "TC-9B",
+   "title": "Hình nón, hình cầu (Toán 9)",
+   "block": "HÌNH NÓN. HÌNH CẦU. DIỆN TÍCH BỀ MẶT VÀ THỂ TÍCH HÌNH NÓN, HÌNH CẦU",
+   "grade": 9,
+   "modelKinds": [
+    "cone",
+    "sphere",
+    "torus"
+   ],
+   "objectives": [
+    "Tính Sxq nón = πrl, V = ⅓πr²h.",
+    "Công thức mặt cầu 4πR², khối cầu ⁴⁄₃πR³.",
+    "So sánh tỉ lệ thể tích nón – trụ – cầu cùng kích thước."
+   ],
+   "activities": [
+    "Thiết diện nón: ngang → hình tròn nhỏ dần; dọc → tam giác cân.",
+    "Xem mô hình 'nón chứa trong trụ' để nhớ hệ số 1/3.",
+    "Bóng đá/bản đồ Trái Đất → mô hình mặt cầu."
+   ],
+   "homework": "Một chiếc mũ sinh nhật hình nón: tính diện tích giấy cần dùng.",
+   "note": ""
+  },
+  {
+   "code": "TH-10A",
+   "title": "Vectơ; tổng hiệu vectơ (Toán 10)",
+   "block": "VECTƠ. TỔNG VÀ HIỆU HAI VECTƠ. QUY TẮC BA ĐIỂM, HÌNH BÌNH HÀNH",
+   "grade": 10,
+   "modelKinds": [
+    "vector"
+   ],
+   "objectives": [
+    "Biểu diễn vectơ trong không gian, cộng theo quy tắc hình bình hành.",
+    "Phân tích một vectơ theo 2 vectơ không cùng phương."
+   ],
+   "activities": [
+    "Xoay mô hình vectơ để thấy phép cộng 3D.",
+    "Mô phỏng lực: 2 lực tác động lên 1 vật → hợp lực."
+   ],
+   "homework": "",
+   "note": ""
+  },
+  {
+   "code": "TH-10B",
+   "title": "Các số đặc trưng của mẫu; biểu đồ (Toán 10)",
+   "block": "SỐ TRUNG BÌNH CỘNG. TRUNG VỊ. MỐT. ĐỘ LỆCH CHUẨN. BIỂU ĐỒ",
+   "grade": 10,
+   "modelKinds": [
+    "stats"
+   ],
+   "objectives": [
+    "Đọc mean/median/mode/std từ mô hình biểu đồ.",
+    "Liên kết chiều cao cột với tần số dữ liệu."
+   ],
+   "activities": [
+    "Chọn mô hình bar/histogram, đọc bảng số liệu ở tab Công thức, tự tính lại mean.",
+    "So sánh 2 biểu đồ cùng trung bình nhưng khác độ lệch chuẩn."
+   ],
+   "homework": "Khảo sát điểm thi của tổ mình và dựng biểu đồ trên giấy.",
+   "note": ""
+  },
+  {
+   "code": "TH-11A",
+   "title": "Hàm số lượng giác; đồ thị sin, cos (Toán 11)",
+   "block": "HÀM SỐ LƯỢNG GIÁC. ĐỒ THỊ HÀM SỐ LƯỢNG GIÁC",
+   "grade": 11,
+   "modelKinds": [
+    "polarcurve",
+    "graph2d",
+    "surfacefn"
+   ],
+   "objectives": [
+    "Liên hệ đường tròn lượng giác với đồ thị sóng sin.",
+    "Đọc chu kỳ, biên độ, pha từ đồ thị 3D.",
+    "Nhận diện đường cong Lissajous"
+   ],
+   "activities": [
+    "Xem mô hình 'vòng tròn tạo sóng': hình chiếu của chuyển động tròn là sin.",
+    "Đổi biên độ/chu kỳ qua các mô hình liền kề, nhận xét sự biến thiên."
+   ],
+   "homework": "Vẽ đồ thị y = sin(x + π/3) bằng cách quan sát mô hình tương ứng.",
+   "note": ""
+  },
+  {
+   "code": "TH-11B",
+   "title": "Mặt nón – mặt trụ trong không gian; thiết diện (Toán 11-12)",
+   "block": "MẶT NÓN TRÒN XOAY. MẶT TRỤ TRÒN XOAY. THIẾT DIỆN",
+   "grade": 11,
+   "modelKinds": [
+    "cone",
+    "cylinder",
+    "revolution"
+   ],
+   "objectives": [
+    "Mô tả mặt nón/trụ như quỹ đạo đường sinh.",
+    "Dự đoán thiết diện khi mặt phẳng cắt nón (elip, parabol, hypebol)."
+   ],
+   "activities": [
+    "Kéo Mặt cắt nghiêng trên nón → xuất hiện conic.",
+    "So sánh thiết diện trụ và nón cùng độ nghiêng."
+   ],
+   "homework": "",
+   "note": "Chủ đề này là cầu nối sang mặt bậc hai (Toán 12)."
+  },
+  {
+   "code": "TH-12A",
+   "title": "Khối đa diện; lăng trụ và chóp (Toán 12)",
+   "block": "KHỐI LĂNG TRỤ. KHỐI CHÓP. KHỐI ĐA DIỆN ĐỀU. CÔNG THỨC THỂ TÍCH KHỐI ĐA DIỆN",
+   "grade": 12,
+   "modelKinds": [
+    "platonic",
+    "prism",
+    "pyramid"
+   ],
+   "objectives": [
+    "Đếm đỉnh–cạnh–mặt, kiểm chứng Euler V−E+F=2.",
+    "Tính thể tích khối chóp/lăng trụ theo công thức tổng quát.",
+    "Ca-vét năm khối đa diện đều."
+   ],
+   "activities": [
+    "Tab Công thức: đối chiếu số đỉnh/cạnh/mặt của từng khối.",
+    "Cắt ngang khối chóp → khối chóp cụt đồng dạng; suy luận tỉ lệ thể tích.",
+    "In khai triển 5 khối đều, gấp và kiểm tra số mặt."
+   ],
+   "homework": "Chứng minh thể tích bát diện đều cạnh a bằng 2 lần khối chóp tứ giác đều.",
+   "note": ""
+  },
+  {
+   "code": "TH-12B",
+   "title": "Mặt tròn xoay: nón, trụ, cầu (Toán 12)",
+   "block": "MẶT NÓN. MẶT TRỤ. MẶT CẦU. DIỆN TÍCH VÀ THỂ TÍCH KHỐI TRÒN XOAY",
+   "grade": 12,
+   "modelKinds": [
+    "cone",
+    "cylinder",
+    "sphere",
+    "torus"
+   ],
+   "objectives": [
+    "Thiết lập công thức diện tích – thể tích mặt tròn xoay.",
+    "Mô tả giao của mặt cầu và mặt phẳng (đường tròn nhỏ)."
+   ],
+   "activities": [
+    "Kéo Mặt cắt qua mặt cầu: thấy thiết diện luôn là hình tròn, bán kính thay đổi.",
+    "Nội tiếp – ngoại tiếp: chóp trong trụ trong cầu."
+   ],
+   "homework": "Tính thể tích phần mặt cầu bị cắt bởi 2 mặt phẳng song song (chỏm cầu).",
+   "note": ""
+  },
+  {
+   "code": "TH-12C",
+   "title": "Toạ độ Oxyz; mặt cầu, mặt phẳng, mặt trụ (Toán 12)",
+   "block": "PHƯƠNG TRÌNH MẶT CẦU. PHƯƠNG TRÌNH MẶT PHẲNG. PHƯƠNG TRÌNH MẶT TRỤ. MẶT BẬC HAI",
+   "grade": 12,
+   "modelKinds": [
+    "quadsurface",
+    "paramsurface",
+    "vector",
+    "sphere"
+   ],
+   "objectives": [
+    "Đọc phương trình từ dạng hình học: elipxoid, paraboloid, hyperboloid.",
+    "Viết pt mặt cầu tâm I bán kính R.",
+    "Nhận diện mặt 1 chiều (trụ) và thiết diện."
+   ],
+   "activities": [
+    "Xoay hyperboloid 1 tầng: thấy các đường thẳng nằm trọn trên mặt (ruled).",
+    "Gán phương trình ↔ mô hình bằng tab Công thức.",
+    "Mặt cắt elipxoid theo 3 hướng → 3 elip khác nhau."
+   ],
+   "homework": "Viết phương trình mặt ellipxoid có bán trục 3, 2, 1 và mô tả thiết diện z=0.",
+   "note": ""
+  },
+  {
+   "code": "TH-KN",
+   "title": "Giải tích mở rộng: tích phân, chuỗi Fourier, fractal (Câu lạc bộ Toán/NCKH)",
+   "block": "TÍCH PHÂN. TỔNG RIEMANN. CHUỖI FOURIER. FRACTAL. TOÁN ỨNG DỤNG",
+   "grade": 11,
+   "modelKinds": [
+    "surfacefn",
+    "fractal",
+    "misc",
+    "graph2d"
+   ],
+   "objectives": [
+    "Hiểu tích phân qua các hộp Riemann 3D.",
+    "Đọc phổ Fourier của tín hiệu tuần hoàn.",
+    "Số chiều fractal và giới hạn tự đồng dạng."
+   ],
+   "activities": [
+    "Tăng số hộp Riemann → diện tích hội tụ.",
+    "Xem Chuỗi Fourier xấp xỉ hàm vuông.",
+    "Tính tỉ lệ tự đồng dạng của Cantor/Sierpinski/Menger."
+   ],
+   "homework": "Chọn 1 mô hình yêu thích, viết 200 dòng giải thích nó cho học sinh lớp dưới.",
+   "note": ""
+  }
+ ],
+ "blockAlias": {
+  "platonic": [
+   "Khối đa diện"
+  ],
+  "prism": [
+   "Khối đa diện"
+  ],
+  "pyramid": [
+   "Khối đa diện"
+  ],
+  "rect": [
+   "Hình phẳng"
+  ],
+  "quad": [
+   "Hình phẳng"
+  ],
+  "triangle": [
+   "Hình phẳng"
+  ],
+  "polygon": [
+   "Hình phẳng"
+  ],
+  "cylinder": [
+   "Mặt tròn xoay"
+  ],
+  "cone": [
+   "Mặt tròn xoay"
+  ],
+  "sphere": [
+   "Mặt tròn xoay"
+  ],
+  "torus": [
+   "Mặt tròn xoay"
+  ],
+  "revolution": [
+   "Mặt tròn xoay"
+  ],
+  "fractionpie": [
+   "Số học",
+   "Phân số"
+  ],
+  "numsys": [
+   "Số học"
+  ],
+  "transform": [
+   "Hình học biến đổi"
+  ],
+  "graph2d": [
+   "Hàm số"
+  ],
+  "polarcurve": [
+   "Hàm lượng giác"
+  ],
+  "surfacefn": [
+   "Giải tích",
+   "Hàm số"
+  ],
+  "quadsurface": [
+   "Nâng cao",
+   "Mặt bậc hai"
+  ],
+  "paramsurface": [
+   "Nâng cao"
+  ],
+  "fractal": [
+   "Fractal"
+  ],
+  "vector": [
+   "Vectơ"
+  ],
+  "stats": [
+   "Thống kê"
+  ],
+  "prob": [
+   "Xác suất"
+  ],
+  "misc": [
+   "Ứng dụng thực tế",
+   "Nâng cao",
+   "Công nghệ 3D"
+  ],
+  "geoextra": [
+   "Hình phẳng",
+   "Ứng dụng thực tế",
+   "Nâng cao"
+  ],
+  "torusknot": [
+   "Nâng cao",
+   "Fractal"
+  ]
+ }
+}
