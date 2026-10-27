@@ -270,10 +270,12 @@ async function boot() {
   // deep-link support: ?model=m0001 or #m0001 → open interactive preview directly
   //                    #lesson=TC-8B → mở bài học
   const qp = new URLSearchParams(location.search);
-  const qModel = qp.get('model') || (/^#(?!lesson=)/.test(location.hash) ? location.hash.slice(1) : '');
+  const qModel = qp.get('model') || (/^#(?!lesson=|theme=)/.test(location.hash) ? location.hash.slice(1) : '');
   const qLesson = qp.get('lesson') || (location.hash.startsWith('#lesson=') ? location.hash.slice(8) : '');
+  const qTheme = qp.get('theme') || (location.hash.startsWith('#theme=') ? location.hash.slice(7) : '');
   applyFilter();
   if (qLesson && Math3DCurriculum.getLesson(qLesson)) selectLesson(qLesson);
+  else if (qTheme && Math3DCurriculum.getTheme(qTheme)) { curTheme = qTheme; buildThemeBar(); }
   else if (qModel) { const m = Math3DCatalog.getModel(qModel); if (m) openModel(m); }
 }
 
